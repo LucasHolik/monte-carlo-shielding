@@ -1,6 +1,5 @@
 # Virtual environments
 venv/
-monte-carlo-venv/
 env/
 
 # Python

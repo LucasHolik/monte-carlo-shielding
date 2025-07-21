@@ -1,0 +1,75 @@
+[build-system]
+requires = ["setuptools>=64", "wheel", "pybind11>=2.10.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "monte-carlo-shielding"
+version = "0.1.0"
+description = "Monte Carlo Radiation Transport Simulator for Nuclear Shielding Applications"
+readme = "README.md"
+authors = [
+    {name = "Lucas Holik", email = "lucas.holik88@gmail.com"}
+]
+license = {text = "MIT"}
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: C++",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "numpy>=1.19.0",
+    "matplotlib>=3.3.0", 
+    "streamlit>=1.0.0",
+    "plotly>=5.0.0",
+    "pandas>=1.3.0",
+    "scipy>=1.7.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov",
+    "black",
+    "flake8",
+    "mypy",
+]
+test = [
+    "pytest>=6.0",
+    "pytest-cov",
+]
+
+[project.urls]
+Homepage = "https://github.com/your-username/monte-carlo-shielding"
+Repository = "https://github.com/your-username/monte-carlo-shielding"
+Issues = "https://github.com/your-username/monte-carlo-shielding/issues"
+
+[project.scripts]
+mc-shield = "mcshield.cli:main"
+
+[tool.setuptools]
+packages = ["mcshield"]
+package-dir = {"" = "python"}
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true

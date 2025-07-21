@@ -1,6 +1,6 @@
 # Monte Carlo Radiation Transport Simulator
 
-**🚧 Work in Progress - Under Active Development 🚧**
+Work in Progress - Under Active Development
 
 A professional-grade Monte Carlo radiation transport simulator built in C++ with Python bindings and a Streamlit web interface. This project demonstrates advanced computational physics and software engineering skills for nuclear industry applications.
 
@@ -20,7 +20,8 @@ Radiation shielding calculations, dose assessment, and nuclear safety analysis -
 
 ## Current Status
 
-**Week 1 - Foundation Development**
+Week 1 - Foundation Development**
+
 - [x] Project setup and environment configuration
 - [ ] Core data structures (Vector3D, Particle, Material classes)
 - [ ] Basic geometry engine

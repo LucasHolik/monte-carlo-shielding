@@ -20,13 +20,7 @@ Radiation shielding calculations, dose assessment, and nuclear safety analysis -
 
 ## Current Status
 
-Week 1 - Foundation Development**
-
-- [x] Project setup and environment configuration
-- [ ] Core data structures (Vector3D, Particle, Material classes)
-- [ ] Basic geometry engine
-- [ ] Monte Carlo sampling foundation
-- [ ] Basic particle transport
+- See plan.md for progress
 
 ## Planned Features
 
@@ -79,7 +73,3 @@ Specialising in Nuclear and Medical Physics
 ## Licence
 
 This project is developed for educational and portfolio purposes.
-
----
-
-*This README will be updated regularly as development progresses. Check back for the latest features and capabilities!*

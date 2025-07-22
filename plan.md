@@ -106,7 +106,7 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
   };
   ```
 
-- [ ] Implement basic `Material` class with atomic properties
+- [x] Implement basic `Material` class with atomic properties
 - [ ] Create `RandomNumberGenerator` class with proper seeding
 - [ ] Write unit tests for all basic functionality
 - [ ] Document all classes with clear comments

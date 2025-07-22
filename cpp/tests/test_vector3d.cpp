@@ -1,4 +1,5 @@
 #include "Particle.hpp"
+#include "Vector3D.hpp"
 
 #include <iostream>
 #include <cassert>

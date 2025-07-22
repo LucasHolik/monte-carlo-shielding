@@ -1,8 +1,8 @@
 #include "Vector3D.hpp"
 
-#include <stdexcept>
-#include <cmath>
 #include <algorithm>
+#include <cmath>
+#include <stdexcept>
 
 // Static constants
 const Vector3D Vector3D::ZERO(0.0, 0.0, 0.0);
@@ -67,7 +67,7 @@ Vector3D &Vector3D::operator*=(double scalar)
 // Scalar division operators
 Vector3D Vector3D::operator/(double scalar) const
 {
-  if (std::abs(scalar) < 1e-15)
+  if(std::abs(scalar) < 1e-15)
   {
     throw std::invalid_argument("Division by zero in Vector3D");
   }
@@ -76,7 +76,7 @@ Vector3D Vector3D::operator/(double scalar) const
 
 Vector3D &Vector3D::operator/=(double scalar)
 {
-  if (std::abs(scalar) < 1e-15)
+  if(std::abs(scalar) < 1e-15)
   {
     throw std::invalid_argument("Division by zero in Vector3D");
   }
@@ -87,10 +87,7 @@ Vector3D &Vector3D::operator/=(double scalar)
 }
 
 // Unary minus
-Vector3D Vector3D::operator-() const
-{
-  return Vector3D(-x_, -y_, -z_);
-}
+Vector3D Vector3D::operator-() const { return Vector3D(-x_, -y_, -z_); }
 
 // Comparison operators
 bool Vector3D::operator==(const Vector3D &other) const
@@ -115,10 +112,8 @@ double Vector3D::dot(const Vector3D &other) const
 // Cross product
 Vector3D Vector3D::cross(const Vector3D &other) const
 {
-  return Vector3D(
-      y_ * other.z_ - z_ * other.y_,
-      z_ * other.x_ - x_ * other.z_,
-      x_ * other.y_ - y_ * other.x_);
+  return Vector3D(y_ * other.z_ - z_ * other.y_, z_ * other.x_ - x_ * other.z_,
+                  x_ * other.y_ - y_ * other.x_);
 }
 
 // Magnitude calculations
@@ -147,7 +142,7 @@ double Vector3D::distanceSquared(const Vector3D &other) const
 std::optional<Vector3D> Vector3D::tryNormalise() const
 {
   double mag = magnitude();
-  if (mag < 1e-15)
+  if(mag < 1e-15)
   {
     return std::nullopt; // Cannot normalise zero vector
   }
@@ -158,7 +153,7 @@ std::optional<Vector3D> Vector3D::tryNormalise() const
 Vector3D Vector3D::normalise() const
 {
   auto result = tryNormalise();
-  if (!result)
+  if(!result)
   {
     throw std::invalid_argument("Cannot normalise zero vector");
   }
@@ -195,7 +190,7 @@ double angleBetween(const Vector3D &a, const Vector3D &b)
   double magA = a.magnitude();
   double magB = b.magnitude();
 
-  if (magA < 1e-15 || magB < 1e-15)
+  if(magA < 1e-15 || magB < 1e-15)
   {
     throw std::invalid_argument("Cannot calculate angle with zero vector");
   }
@@ -213,7 +208,7 @@ std::optional<double> safeAngleBetween(const Vector3D &a, const Vector3D &b)
   double magA = a.magnitude();
   double magB = b.magnitude();
 
-  if (magA < 1e-15 || magB < 1e-15)
+  if(magA < 1e-15 || magB < 1e-15)
   {
     return std::nullopt;
   }

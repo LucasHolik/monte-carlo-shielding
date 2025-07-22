@@ -1,20 +1,20 @@
 #include "Material.hpp"
 
-#include <stdexcept>
-#include <sstream>
 #include <algorithm>
-#include <numeric>
 #include <cmath>
 #include <iomanip>
+#include <numeric>
+#include <sstream>
+#include <stdexcept>
 
 // Physical constants
 namespace PhysicalConstants
 {
-  constexpr double AVOGADRO_NUMBER = 6.02214076e23;              // mol⁻¹
-  constexpr double CLASSICAL_ELECTRON_RADIUS = 2.8179403262e-13; // cm
-  constexpr double ELECTRON_REST_MASS = 0.510999;                // MeV
-  constexpr double FINE_STRUCTURE_CONSTANT = 1.0 / 137.036;      // dimensionless
-}
+constexpr double AVOGADRO_NUMBER = 6.02214076e23;              // mol⁻¹
+constexpr double CLASSICAL_ELECTRON_RADIUS = 2.8179403262e-13; // cm
+constexpr double ELECTRON_REST_MASS = 0.510999;                // MeV
+constexpr double FINE_STRUCTURE_CONSTANT = 1.0 / 137.036;      // dimensionless
+} // namespace PhysicalConstants
 
 // Standard atomic masses (u) - first 30 elements
 static const double STANDARD_ATOMIC_MASSES[] = {
@@ -116,61 +116,70 @@ static const double STANDARD_ATOMIC_MASSES[] = {
 // Element symbols
 static const std::string ELEMENT_SYMBOLS[] = {
     "", // Z=0
-    "H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne",
-    "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar", "K", "Ca",
-    "Sc", "Ti", "V", "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Zn",
-    "Ga", "Ge", "As", "Se", "Br", "Kr", "Rb", "Sr", "Y", "Zr",
-    "Nb", "Mo", "Tc", "Ru", "Rh", "Pd", "Ag", "Cd", "In", "Sn",
-    "Sb", "Te", "I", "Xe", "Cs", "Ba", "La", "Ce", "Pr", "Nd",
-    "Pm", "Sm", "Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm", "Yb",
-    "Lu", "Hf", "Ta", "W", "Re", "Os", "Ir", "Pt", "Au", "Hg",
-    "Tl", "Pb", "Bi", "Po", "At", "Rn", "Fr", "Ra", "Ac", "Th",
-    "Pa", "U"};
+    "H",  "He", "Li", "Be", "B",  "C",  "N",  "O",  "F",  "Ne", "Na", "Mg",
+    "Al", "Si", "P",  "S",  "Cl", "Ar", "K",  "Ca", "Sc", "Ti", "V",  "Cr",
+    "Mn", "Fe", "Co", "Ni", "Cu", "Zn", "Ga", "Ge", "As", "Se", "Br", "Kr",
+    "Rb", "Sr", "Y",  "Zr", "Nb", "Mo", "Tc", "Ru", "Rh", "Pd", "Ag", "Cd",
+    "In", "Sn", "Sb", "Te", "I",  "Xe", "Cs", "Ba", "La", "Ce", "Pr", "Nd",
+    "Pm", "Sm", "Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm", "Yb", "Lu", "Hf",
+    "Ta", "W",  "Re", "Os", "Ir", "Pt", "Au", "Hg", "Tl", "Pb", "Bi", "Po",
+    "At", "Rn", "Fr", "Ra", "Ac", "Th", "Pa", "U"};
 
 // Element names
 static const std::string ELEMENT_NAMES[] = {
     "", // Z=0
-    "Hydrogen", "Helium", "Lithium", "Beryllium", "Boron", "Carbon", "Nitrogen", "Oxygen", "Fluorine", "Neon",
-    "Sodium", "Magnesium", "Aluminium", "Silicon", "Phosphorus", "Sulphur", "Chlorine", "Argon", "Potassium", "Calcium",
-    "Scandium", "Titanium", "Vanadium", "Chromium", "Manganese", "Iron", "Cobalt", "Nickel", "Copper", "Zinc",
-    "Gallium", "Germanium", "Arsenic", "Selenium", "Bromine", "Krypton", "Rubidium", "Strontium", "Yttrium", "Zirconium",
-    "Niobium", "Molybdenum", "Technetium", "Ruthenium", "Rhodium", "Palladium", "Silver", "Cadmium", "Indium", "Tin",
-    "Antimony", "Tellurium", "Iodine", "Xenon", "Caesium", "Barium", "Lanthanum", "Cerium", "Praseodymium", "Neodymium",
-    "Promethium", "Samarium", "Europium", "Gadolinium", "Terbium", "Dysprosium", "Holmium", "Erbium", "Thulium", "Ytterbium",
-    "Lutetium", "Hafnium", "Tantalum", "Tungsten", "Rhenium", "Osmium", "Iridium", "Platinum", "Gold", "Mercury",
-    "Thallium", "Lead", "Bismuth", "Polonium", "Astatine", "Radon", "Francium", "Radium", "Actinium", "Thorium",
-    "Protactinium", "Uranium"};
+    "Hydrogen",   "Helium",     "Lithium",      "Beryllium",
+    "Boron",      "Carbon",     "Nitrogen",     "Oxygen",
+    "Fluorine",   "Neon",       "Sodium",       "Magnesium",
+    "Aluminium",  "Silicon",    "Phosphorus",   "Sulphur",
+    "Chlorine",   "Argon",      "Potassium",    "Calcium",
+    "Scandium",   "Titanium",   "Vanadium",     "Chromium",
+    "Manganese",  "Iron",       "Cobalt",       "Nickel",
+    "Copper",     "Zinc",       "Gallium",      "Germanium",
+    "Arsenic",    "Selenium",   "Bromine",      "Krypton",
+    "Rubidium",   "Strontium",  "Yttrium",      "Zirconium",
+    "Niobium",    "Molybdenum", "Technetium",   "Ruthenium",
+    "Rhodium",    "Palladium",  "Silver",       "Cadmium",
+    "Indium",     "Tin",        "Antimony",     "Tellurium",
+    "Iodine",     "Xenon",      "Caesium",      "Barium",
+    "Lanthanum",  "Cerium",     "Praseodymium", "Neodymium",
+    "Promethium", "Samarium",   "Europium",     "Gadolinium",
+    "Terbium",    "Dysprosium", "Holmium",      "Erbium",
+    "Thulium",    "Ytterbium",  "Lutetium",     "Hafnium",
+    "Tantalum",   "Tungsten",   "Rhenium",      "Osmium",
+    "Iridium",    "Platinum",   "Gold",         "Mercury",
+    "Thallium",   "Lead",       "Bismuth",      "Polonium",
+    "Astatine",   "Radon",      "Francium",     "Radium",
+    "Actinium",   "Thorium",    "Protactinium", "Uranium"};
 
 constexpr size_t MAX_ATOMIC_NUMBER = 92;
 
 // ElementComposition implementation
-ElementComposition::ElementComposition(int z, double a, double fraction, std::string_view sym)
+ElementComposition::ElementComposition(int z, double a, double fraction,
+                                       std::string_view sym)
     : atomic_number(z), atomic_mass(a), weight_fraction(fraction), symbol(sym)
 {
-  if (z < 0 || z > static_cast<int>(MAX_ATOMIC_NUMBER))
+  if(z < 0 || z > static_cast<int>(MAX_ATOMIC_NUMBER))
   {
     throw std::invalid_argument("Invalid atomic number: " + std::to_string(z));
   }
-  if (a <= 0.0)
+  if(a <= 0.0)
   {
     throw std::invalid_argument("Atomic mass must be positive");
   }
-  if (fraction < 0.0 || fraction > 1.0)
+  if(fraction < 0.0 || fraction > 1.0)
   {
     throw std::invalid_argument("Weight fraction must be between 0.0 and 1.0");
   }
 }
 
 // Material implementation
-Material::Material()
-    : name_("Unknown"), density_(0.0)
-{
-}
+Material::Material() : name_("Unknown"), density_(0.0) {}
 
 Material::Material(std::string_view name, double density)
     : name_(name), density_(density)
 {
-  if (density < 0.0)
+  if(density < 0.0)
   {
     throw std::invalid_argument("Material density cannot be negative");
   }
@@ -178,7 +187,7 @@ Material::Material(std::string_view name, double density)
 
 void Material::setDensity(double density)
 {
-  if (density < 0.0)
+  if(density < 0.0)
   {
     throw std::invalid_argument("Material density cannot be negative");
   }
@@ -186,10 +195,11 @@ void Material::setDensity(double density)
   invalidateCache();
 }
 
-void Material::addElement(int atomic_number, double atomic_mass, double weight_fraction,
-                          std::string_view symbol)
+void Material::addElement(int atomic_number, double atomic_mass,
+                          double weight_fraction, std::string_view symbol)
 {
-  composition_.emplace_back(atomic_number, atomic_mass, weight_fraction, symbol);
+  composition_.emplace_back(atomic_number, atomic_mass, weight_fraction,
+                            symbol);
   invalidateCache();
 }
 
@@ -207,18 +217,18 @@ void Material::clearComposition()
 
 void Material::normaliseWeightFractions()
 {
-  if (composition_.empty())
+  if(composition_.empty())
     return;
 
-  double total_weight = std::accumulate(composition_.begin(), composition_.end(), 0.0,
-                                        [](double sum, const ElementComposition &elem)
-                                        {
-                                          return sum + elem.weight_fraction;
-                                        });
+  double total_weight =
+      std::accumulate(composition_.begin(), composition_.end(), 0.0,
+                      [](double sum, const ElementComposition &elem) {
+                        return sum + elem.weight_fraction;
+                      });
 
-  if (total_weight > 0.0)
+  if(total_weight > 0.0)
   {
-    for (auto &element : composition_)
+    for(auto &element : composition_)
     {
       element.weight_fraction /= total_weight;
     }
@@ -240,7 +250,7 @@ std::vector<std::string> Material::getPropertyNames() const
 {
   std::vector<std::string> names;
   names.reserve(properties_.size());
-  for (const auto &[name, value] : properties_)
+  for(const auto &[name, value] : properties_)
   {
     names.push_back(name);
   }
@@ -249,7 +259,7 @@ std::vector<std::string> Material::getPropertyNames() const
 
 double Material::getEffectiveAtomicNumber() const
 {
-  if (!effective_z_.has_value())
+  if(!effective_z_.has_value())
   {
     effective_z_ = calculateEffectiveZ();
   }
@@ -258,7 +268,7 @@ double Material::getEffectiveAtomicNumber() const
 
 double Material::getEffectiveAtomicMass() const
 {
-  if (!effective_a_.has_value())
+  if(!effective_a_.has_value())
   {
     effective_a_ = calculateEffectiveA();
   }
@@ -267,11 +277,11 @@ double Material::getEffectiveAtomicMass() const
 
 double Material::getElectronDensity() const
 {
-  if (composition_.empty())
+  if(composition_.empty())
     return 0.0;
 
   double electron_density = 0.0;
-  for (const auto &element : composition_)
+  for(const auto &element : composition_)
   {
     double number_density = density_ * PhysicalConstants::AVOGADRO_NUMBER *
                             element.weight_fraction / element.atomic_mass;
@@ -282,11 +292,11 @@ double Material::getElectronDensity() const
 
 double Material::getAtomDensity() const
 {
-  if (composition_.empty())
+  if(composition_.empty())
     return 0.0;
 
   double atom_density = 0.0;
-  for (const auto &element : composition_)
+  for(const auto &element : composition_)
   {
     atom_density += density_ * PhysicalConstants::AVOGADRO_NUMBER *
                     element.weight_fraction / element.atomic_mass;
@@ -296,9 +306,9 @@ double Material::getAtomDensity() const
 
 double Material::getNumberDensity(int atomic_number) const
 {
-  for (const auto &element : composition_)
+  for(const auto &element : composition_)
   {
-    if (element.atomic_number == atomic_number)
+    if(element.atomic_number == atomic_number)
     {
       return density_ * PhysicalConstants::AVOGADRO_NUMBER *
              element.weight_fraction / element.atomic_mass;
@@ -309,14 +319,14 @@ double Material::getNumberDensity(int atomic_number) const
 
 double Material::getRadiationLength() const
 {
-  if (composition_.empty())
+  if(composition_.empty())
     return std::numeric_limits<double>::infinity();
 
   // Approximate formula for radiation length (PDG approximation)
   double z_eff = getEffectiveAtomicNumber();
   double a_eff = getEffectiveAtomicMass();
 
-  if (z_eff < 1.0 || a_eff < 1.0)
+  if(z_eff < 1.0 || a_eff < 1.0)
     return std::numeric_limits<double>::infinity();
 
   // X₀ ≈ 716.4 A / (Z(Z+1)ln(287/√Z)) g/cm²
@@ -326,7 +336,7 @@ double Material::getRadiationLength() const
 
 double Material::getNuclearInteractionLength() const
 {
-  if (composition_.empty())
+  if(composition_.empty())
     return std::numeric_limits<double>::infinity();
 
   // Approximate nuclear interaction length
@@ -336,15 +346,15 @@ double Material::getNuclearInteractionLength() const
 
 std::optional<double> Material::getMeanExcitationEnergy() const
 {
-  if (composition_.empty())
+  if(composition_.empty())
     return std::nullopt;
 
   // Rough approximation: I ≈ 10 * Z eV for Z > 1, 19.2 eV for hydrogen
   double z_eff = getEffectiveAtomicNumber();
-  if (z_eff < 1.0)
+  if(z_eff < 1.0)
     return std::nullopt;
 
-  if (z_eff < 1.5)
+  if(z_eff < 1.5)
   {
     return 19.2e-6; // 19.2 eV in MeV for hydrogen
   }
@@ -356,18 +366,19 @@ std::optional<double> Material::getMeanExcitationEnergy() const
 
 bool Material::isValid() const
 {
-  if (density_ < 0.0)
+  if(density_ < 0.0)
     return false;
-  if (composition_.empty())
+  if(composition_.empty())
     return true; // Vacuum is valid
 
-  for (const auto &element : composition_)
+  for(const auto &element : composition_)
   {
-    if (element.atomic_number < 0 || element.atomic_number > static_cast<int>(MAX_ATOMIC_NUMBER))
+    if(element.atomic_number < 0 ||
+       element.atomic_number > static_cast<int>(MAX_ATOMIC_NUMBER))
       return false;
-    if (element.atomic_mass <= 0.0)
+    if(element.atomic_mass <= 0.0)
       return false;
-    if (element.weight_fraction < 0.0 || element.weight_fraction > 1.0)
+    if(element.weight_fraction < 0.0 || element.weight_fraction > 1.0)
       return false;
   }
 
@@ -376,14 +387,14 @@ bool Material::isValid() const
 
 bool Material::isNormalised(double tolerance) const
 {
-  if (composition_.empty())
+  if(composition_.empty())
     return true;
 
-  double total_weight = std::accumulate(composition_.begin(), composition_.end(), 0.0,
-                                        [](double sum, const ElementComposition &elem)
-                                        {
-                                          return sum + elem.weight_fraction;
-                                        });
+  double total_weight =
+      std::accumulate(composition_.begin(), composition_.end(), 0.0,
+                      [](double sum, const ElementComposition &elem) {
+                        return sum + elem.weight_fraction;
+                      });
 
   return std::abs(total_weight - 1.0) <= tolerance;
 }
@@ -392,40 +403,42 @@ std::vector<std::string> Material::validateComposition() const
 {
   std::vector<std::string> errors;
 
-  if (density_ < 0.0)
+  if(density_ < 0.0)
   {
     errors.push_back("Negative density");
   }
 
-  if (composition_.empty() && density_ > 0.0)
+  if(composition_.empty() && density_ > 0.0)
   {
     errors.push_back("Non-zero density but empty composition");
   }
 
-  for (size_t i = 0; i < composition_.size(); ++i)
+  for(size_t i = 0; i < composition_.size(); ++i)
   {
     const auto &element = composition_[i];
     std::string prefix = "Element " + std::to_string(i) + ": ";
 
-    if (element.atomic_number < 1 || element.atomic_number > static_cast<int>(MAX_ATOMIC_NUMBER))
+    if(element.atomic_number < 1 ||
+       element.atomic_number > static_cast<int>(MAX_ATOMIC_NUMBER))
     {
-      errors.push_back(prefix + "Invalid atomic number " + std::to_string(element.atomic_number));
+      errors.push_back(prefix + "Invalid atomic number " +
+                       std::to_string(element.atomic_number));
     }
-    if (element.atomic_mass <= 0.0)
+    if(element.atomic_mass <= 0.0)
     {
       errors.push_back(prefix + "Non-positive atomic mass");
     }
-    if (element.weight_fraction < 0.0)
+    if(element.weight_fraction < 0.0)
     {
       errors.push_back(prefix + "Negative weight fraction");
     }
-    if (element.weight_fraction > 1.0)
+    if(element.weight_fraction > 1.0)
     {
       errors.push_back(prefix + "Weight fraction > 1.0");
     }
   }
 
-  if (!isNormalised(1e-6))
+  if(!isNormalised(1e-6))
   {
     errors.push_back("Weight fractions do not sum to 1.0");
   }
@@ -436,23 +449,24 @@ std::vector<std::string> Material::validateComposition() const
 std::optional<ElementComposition> Material::getElement(int atomic_number) const
 {
   auto it = std::find_if(composition_.begin(), composition_.end(),
-                         [atomic_number](const ElementComposition &elem)
-                         {
+                         [atomic_number](const ElementComposition &elem) {
                            return elem.atomic_number == atomic_number;
                          });
 
-  return (it != composition_.end()) ? std::optional<ElementComposition>(*it) : std::nullopt;
+  return (it != composition_.end()) ? std::optional<ElementComposition>(*it)
+                                    : std::nullopt;
 }
 
-std::optional<ElementComposition> Material::getElement(std::string_view symbol) const
+std::optional<ElementComposition>
+Material::getElement(std::string_view symbol) const
 {
   auto it = std::find_if(composition_.begin(), composition_.end(),
-                         [symbol](const ElementComposition &elem)
-                         {
+                         [symbol](const ElementComposition &elem) {
                            return elem.symbol == symbol;
                          });
 
-  return (it != composition_.end()) ? std::optional<ElementComposition>(*it) : std::nullopt;
+  return (it != composition_.end()) ? std::optional<ElementComposition>(*it)
+                                    : std::nullopt;
 }
 
 double Material::getWeightFraction(int atomic_number) const
@@ -473,10 +487,9 @@ std::string Material::toString() const
   ss << "Material '" << name_ << "' (density: " << density_ << " g/cm³)\n";
   ss << getCompositionString();
 
-  if (!properties_.empty())
+  if(!properties_.empty())
   {
-    ss << "\nProperties:\n"
-       << getPropertiesString();
+    ss << "\nProperties:\n" << getPropertiesString();
   }
 
   return ss.str();
@@ -484,7 +497,7 @@ std::string Material::toString() const
 
 std::string Material::getCompositionString() const
 {
-  if (composition_.empty())
+  if(composition_.empty())
   {
     return "Empty composition (vacuum)";
   }
@@ -492,12 +505,13 @@ std::string Material::getCompositionString() const
   std::stringstream ss;
   ss << "Composition:\n";
 
-  for (size_t i = 0; i < composition_.size(); ++i)
+  for(size_t i = 0; i < composition_.size(); ++i)
   {
     const auto &element = composition_[i];
     ss << "  " << element.symbol << " (Z=" << element.atomic_number
        << ", A=" << std::fixed << std::setprecision(3) << element.atomic_mass
-       << "): " << std::setprecision(1) << element.weight_fraction * 100.0 << "%\n";
+       << "): " << std::setprecision(1) << element.weight_fraction * 100.0
+       << "%\n";
   }
 
   return ss.str();
@@ -505,18 +519,17 @@ std::string Material::getCompositionString() const
 
 std::string Material::getPropertiesString() const
 {
-  if (properties_.empty())
+  if(properties_.empty())
   {
     return "No additional properties";
   }
 
   std::stringstream ss;
-  for (const auto &[name, value] : properties_)
+  for(const auto &[name, value] : properties_)
   {
     ss << "  " << name << ": ";
 
-    std::visit([&ss](const auto &v)
-               { ss << v; }, value);
+    std::visit([&ss](const auto &v) { ss << v; }, value);
 
     ss << "\n";
   }
@@ -528,25 +541,25 @@ bool Material::operator==(const Material &other) const
 {
   constexpr double tolerance = 1e-10;
 
-  if (name_ != other.name_ || std::abs(density_ - other.density_) > tolerance)
+  if(name_ != other.name_ || std::abs(density_ - other.density_) > tolerance)
   {
     return false;
   }
 
-  if (composition_.size() != other.composition_.size())
+  if(composition_.size() != other.composition_.size())
   {
     return false;
   }
 
-  for (size_t i = 0; i < composition_.size(); ++i)
+  for(size_t i = 0; i < composition_.size(); ++i)
   {
     const auto &elem1 = composition_[i];
     const auto &elem2 = other.composition_[i];
 
-    if (elem1.atomic_number != elem2.atomic_number ||
-        std::abs(elem1.atomic_mass - elem2.atomic_mass) > tolerance ||
-        std::abs(elem1.weight_fraction - elem2.weight_fraction) > tolerance ||
-        elem1.symbol != elem2.symbol)
+    if(elem1.atomic_number != elem2.atomic_number ||
+       std::abs(elem1.atomic_mass - elem2.atomic_mass) > tolerance ||
+       std::abs(elem1.weight_fraction - elem2.weight_fraction) > tolerance ||
+       elem1.symbol != elem2.symbol)
     {
       return false;
     }
@@ -630,13 +643,16 @@ Material Material::createPolyethylene(double density)
 Material Material::createElement(int atomic_number, double density,
                                  std::string_view name, std::string_view symbol)
 {
-  if (atomic_number < 1 || atomic_number > static_cast<int>(MAX_ATOMIC_NUMBER))
+  if(atomic_number < 1 || atomic_number > static_cast<int>(MAX_ATOMIC_NUMBER))
   {
-    throw std::invalid_argument("Invalid atomic number: " + std::to_string(atomic_number));
+    throw std::invalid_argument("Invalid atomic number: " +
+                                std::to_string(atomic_number));
   }
 
-  std::string element_name = name.empty() ? getElementName(atomic_number) : std::string(name);
-  std::string element_symbol = symbol.empty() ? getElementSymbol(atomic_number) : std::string(symbol);
+  std::string element_name =
+      name.empty() ? getElementName(atomic_number) : std::string(name);
+  std::string element_symbol =
+      symbol.empty() ? getElementSymbol(atomic_number) : std::string(symbol);
   double atomic_mass = getStandardAtomicMass(atomic_number);
 
   Material material(element_name, density);
@@ -645,12 +661,13 @@ Material Material::createElement(int atomic_number, double density,
   return material;
 }
 
-Material Material::createCompound(std::string_view name, double density,
-                                  const std::vector<ElementComposition> &elements)
+Material
+Material::createCompound(std::string_view name, double density,
+                         const std::vector<ElementComposition> &elements)
 {
   Material material(name, density);
 
-  for (const auto &element : elements)
+  for(const auto &element : elements)
   {
     material.addElement(element);
   }
@@ -661,16 +678,17 @@ Material Material::createCompound(std::string_view name, double density,
 // Static utility methods
 double Material::getStandardAtomicMass(int atomic_number)
 {
-  if (atomic_number < 0 || atomic_number > static_cast<int>(MAX_ATOMIC_NUMBER))
+  if(atomic_number < 0 || atomic_number > static_cast<int>(MAX_ATOMIC_NUMBER))
   {
-    throw std::invalid_argument("Invalid atomic number: " + std::to_string(atomic_number));
+    throw std::invalid_argument("Invalid atomic number: " +
+                                std::to_string(atomic_number));
   }
   return STANDARD_ATOMIC_MASSES[atomic_number];
 }
 
 std::string Material::getElementSymbol(int atomic_number)
 {
-  if (atomic_number < 0 || atomic_number > static_cast<int>(MAX_ATOMIC_NUMBER))
+  if(atomic_number < 0 || atomic_number > static_cast<int>(MAX_ATOMIC_NUMBER))
   {
     return "?";
   }
@@ -679,7 +697,7 @@ std::string Material::getElementSymbol(int atomic_number)
 
 std::string Material::getElementName(int atomic_number)
 {
-  if (atomic_number < 0 || atomic_number > static_cast<int>(MAX_ATOMIC_NUMBER))
+  if(atomic_number < 0 || atomic_number > static_cast<int>(MAX_ATOMIC_NUMBER))
   {
     return "Unknown";
   }
@@ -688,9 +706,9 @@ std::string Material::getElementName(int atomic_number)
 
 std::optional<int> Material::getAtomicNumber(std::string_view symbol)
 {
-  for (size_t i = 1; i <= MAX_ATOMIC_NUMBER; ++i)
+  for(size_t i = 1; i <= MAX_ATOMIC_NUMBER; ++i)
   {
-    if (ELEMENT_SYMBOLS[i] == symbol)
+    if(ELEMENT_SYMBOLS[i] == symbol)
     {
       return static_cast<int>(i);
     }
@@ -707,16 +725,17 @@ void Material::invalidateCache() const
 
 double Material::calculateEffectiveZ() const
 {
-  if (composition_.empty())
+  if(composition_.empty())
     return 0.0;
 
   // Calculate effective Z using electron fraction weighting
   double total_electrons = 0.0;
   double weighted_z = 0.0;
 
-  for (const auto &element : composition_)
+  for(const auto &element : composition_)
   {
-    double electrons_per_gram = element.weight_fraction * element.atomic_number / element.atomic_mass;
+    double electrons_per_gram =
+        element.weight_fraction * element.atomic_number / element.atomic_mass;
     total_electrons += electrons_per_gram;
     weighted_z += electrons_per_gram * element.atomic_number;
   }
@@ -726,13 +745,12 @@ double Material::calculateEffectiveZ() const
 
 double Material::calculateEffectiveA() const
 {
-  if (composition_.empty())
+  if(composition_.empty())
     return 0.0;
 
   // Calculate effective A using weight fraction
   return std::accumulate(composition_.begin(), composition_.end(), 0.0,
-                         [](double sum, const ElementComposition &elem)
-                         {
+                         [](double sum, const ElementComposition &elem) {
                            return sum + elem.weight_fraction * elem.atomic_mass;
                          });
 }
@@ -740,11 +758,11 @@ double Material::calculateEffectiveA() const
 void Material::validateAndThrow() const
 {
   auto errors = validateComposition();
-  if (!errors.empty())
+  if(!errors.empty())
   {
     std::stringstream ss;
     ss << "Material validation failed:\n";
-    for (const auto &error : errors)
+    for(const auto &error : errors)
     {
       ss << "  - " << error << "\n";
     }
@@ -753,21 +771,22 @@ void Material::validateAndThrow() const
 }
 
 // Utility functions
-double calculateMeanAtomicMass(const std::vector<ElementComposition> &composition)
+double
+calculateMeanAtomicMass(const std::vector<ElementComposition> &composition)
 {
   return std::accumulate(composition.begin(), composition.end(), 0.0,
-                         [](double sum, const ElementComposition &elem)
-                         {
+                         [](double sum, const ElementComposition &elem) {
                            return sum + elem.weight_fraction * elem.atomic_mass;
                          });
 }
 
-double calculateMeanAtomicNumber(const std::vector<ElementComposition> &composition)
+double
+calculateMeanAtomicNumber(const std::vector<ElementComposition> &composition)
 {
   double total_atoms = 0.0;
   double weighted_z = 0.0;
 
-  for (const auto &element : composition)
+  for(const auto &element : composition)
   {
     double atom_fraction = element.weight_fraction / element.atomic_mass;
     total_atoms += atom_fraction;
@@ -777,22 +796,23 @@ double calculateMeanAtomicNumber(const std::vector<ElementComposition> &composit
   return (total_atoms > 0.0) ? weighted_z / total_atoms : 0.0;
 }
 
-std::string formatChemicalFormula(const std::vector<ElementComposition> &composition)
+std::string
+formatChemicalFormula(const std::vector<ElementComposition> &composition)
 {
-  if (composition.empty())
+  if(composition.empty())
   {
     return "Vacuum";
   }
 
-  if (composition.size() == 1)
+  if(composition.size() == 1)
   {
     return composition[0].symbol;
   }
 
   std::stringstream ss;
-  for (size_t i = 0; i < composition.size(); ++i)
+  for(size_t i = 0; i < composition.size(); ++i)
   {
-    if (i > 0)
+    if(i > 0)
       ss << " + ";
     ss << composition[i].symbol << "(" << std::fixed << std::setprecision(1)
        << composition[i].weight_fraction * 100.0 << "%)";

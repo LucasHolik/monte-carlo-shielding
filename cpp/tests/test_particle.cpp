@@ -1,8 +1,8 @@
 #include "Particle.hpp"
 
-#include <iostream>
 #include <cassert>
 #include <cmath>
+#include <iostream>
 #include <stdexcept>
 #include <string>
 
@@ -174,7 +174,7 @@ void testMovement()
   {
     p2.move(-1.0);
   }
-  catch (const std::invalid_argument &)
+  catch(const std::invalid_argument &)
   {
     threw = true;
   }
@@ -224,15 +224,17 @@ void testEnergyOperations()
   std::cout << "Testing energy operations..." << std::endl;
 
   // Test photon energy operations
-  Particle photon = Particle::createPhoton(Vector3D::ZERO, Vector3D::UNIT_X, 2.0);
+  Particle photon =
+      Particle::createPhoton(Vector3D::ZERO, Vector3D::UNIT_X, 2.0);
   assert(photon.getKineticEnergy() == 2.0); // Photon: KE = Total Energy
   assert(photon.getTotalEnergy() == 2.0);
   assert(photon.getRestMassEnergy() == 0.0);
 
   // Test electron energy operations
   double electronRestMass = Particle::getRestMass(ParticleType::Electron);
-  Particle electron = Particle::createElectron(Vector3D::ZERO, Vector3D::UNIT_Y,
-                                               electronRestMass + 1.0); // 1 MeV kinetic energy
+  Particle electron =
+      Particle::createElectron(Vector3D::ZERO, Vector3D::UNIT_Y,
+                               electronRestMass + 1.0); // 1 MeV kinetic energy
   assert(std::abs(electron.getKineticEnergy() - 1.0) < 1e-10);
   assert(electron.getRestMassEnergy() == electronRestMass);
   assert(electron.getTotalEnergy() == electronRestMass + 1.0);
@@ -251,10 +253,12 @@ void testEnergyOperations()
   assert(!excessiveLoss.has_value());
 
   // Test energy loss leading to termination
-  Particle lowEnergyParticle = Particle::createElectron(Vector3D::ZERO, Vector3D::UNIT_Z, 5e-7);
+  Particle lowEnergyParticle =
+      Particle::createElectron(Vector3D::ZERO, Vector3D::UNIT_Z, 5e-7);
   auto terminalLoss = lowEnergyParticle.loseEnergy(1e-7);
   assert(terminalLoss.has_value());
-  assert(!lowEnergyParticle.isAlive()); // Should be killed due to low energy (final energy = 4e-7 < 1e-6)
+  assert(!lowEnergyParticle.isAlive()); // Should be killed due to low energy
+                                        // (final energy = 4e-7 < 1e-6)
 
   std::cout << "✓ Energy operations passed" << std::endl;
 }
@@ -264,7 +268,8 @@ void testRelativisticCalculations()
   std::cout << "Testing relativistic calculations..." << std::endl;
 
   // Test photon (always moves at speed of light)
-  Particle photon = Particle::createPhoton(Vector3D::ZERO, Vector3D::UNIT_X, 1.0);
+  Particle photon =
+      Particle::createPhoton(Vector3D::ZERO, Vector3D::UNIT_X, 1.0);
   assert(photon.getSpeed() == 1.0); // c in natural units
   assert(photon.getBeta() == 1.0);
   assert(std::isinf(photon.getGamma()));
@@ -272,14 +277,16 @@ void testRelativisticCalculations()
 
   // Test electron at rest
   double electronMass = Particle::getRestMass(ParticleType::Electron);
-  Particle electronAtRest = Particle::createElectron(Vector3D::ZERO, Vector3D::UNIT_Y, electronMass);
+  Particle electronAtRest =
+      Particle::createElectron(Vector3D::ZERO, Vector3D::UNIT_Y, electronMass);
   assert(std::abs(electronAtRest.getSpeed() - 0.0) < 1e-10);
   assert(std::abs(electronAtRest.getBeta() - 0.0) < 1e-10);
   assert(std::abs(electronAtRest.getGamma() - 1.0) < 1e-10);
   assert(std::abs(electronAtRest.getMomentum() - 0.0) < 1e-10);
 
   // Test relativistic electron (γ = 2)
-  Particle fastElectron = Particle::createElectron(Vector3D::ZERO, Vector3D::UNIT_Z, 2.0 * electronMass);
+  Particle fastElectron = Particle::createElectron(
+      Vector3D::ZERO, Vector3D::UNIT_Z, 2.0 * electronMass);
   assert(std::abs(fastElectron.getGamma() - 2.0) < 1e-10);
   double expectedBeta = std::sqrt(1.0 - 1.0 / 4.0); // β = √(1 - 1/γ²)
   assert(std::abs(fastElectron.getBeta() - expectedBeta) < 1e-10);
@@ -291,28 +298,32 @@ void testParticleTypeChecks()
 {
   std::cout << "Testing particle type checks..." << std::endl;
 
-  Particle photon = Particle::createPhoton(Vector3D::ZERO, Vector3D::UNIT_X, 1.0);
+  Particle photon =
+      Particle::createPhoton(Vector3D::ZERO, Vector3D::UNIT_X, 1.0);
   assert(photon.isPhoton());
   assert(!photon.isNeutron());
   assert(!photon.isElectron());
   assert(!photon.isProton());
   assert(!photon.isCharged());
 
-  Particle neutron = Particle::createNeutron(Vector3D::ZERO, Vector3D::UNIT_Y, 1.0);
+  Particle neutron =
+      Particle::createNeutron(Vector3D::ZERO, Vector3D::UNIT_Y, 1.0);
   assert(!neutron.isPhoton());
   assert(neutron.isNeutron());
   assert(!neutron.isElectron());
   assert(!neutron.isProton());
   assert(!neutron.isCharged());
 
-  Particle electron = Particle::createElectron(Vector3D::ZERO, Vector3D::UNIT_Z, 1.0);
+  Particle electron =
+      Particle::createElectron(Vector3D::ZERO, Vector3D::UNIT_Z, 1.0);
   assert(!electron.isPhoton());
   assert(!electron.isNeutron());
   assert(electron.isElectron());
   assert(!electron.isProton());
   assert(electron.isCharged());
 
-  Particle proton = Particle::createProton(Vector3D::ZERO, Vector3D::UNIT_X, 1.0);
+  Particle proton =
+      Particle::createProton(Vector3D::ZERO, Vector3D::UNIT_X, 1.0);
   assert(!proton.isPhoton());
   assert(!proton.isNeutron());
   assert(!proton.isElectron());
@@ -340,7 +351,8 @@ void testInteractionTracking()
 
   // Test birth energy
   auto initialBirthEnergy = p.getBirthEnergy();
-  assert(initialBirthEnergy.has_value()); // Should be set to initial energy (1.0)
+  assert(
+      initialBirthEnergy.has_value()); // Should be set to initial energy (1.0)
   assert(*initialBirthEnergy == 1.0);
 
   p.setBirthEnergy(1.5);
@@ -355,13 +367,15 @@ void testSecondaryParticleCreation()
 {
   std::cout << "Testing secondary particle creation..." << std::endl;
 
-  Particle primary = Particle::createPhoton(Vector3D(1.0, 2.0, 3.0), Vector3D::UNIT_Z, 2.0);
+  Particle primary =
+      Particle::createPhoton(Vector3D(1.0, 2.0, 3.0), Vector3D::UNIT_Z, 2.0);
   primary.setGeneration(0);
   primary.setBirthEnergy(2.0);
 
   Vector3D secondaryPos(4.0, 5.0, 6.0);
   Vector3D secondaryDir(0.0, 1.0, 0.0);
-  Particle secondary = primary.createSecondary(ParticleType::Electron, secondaryPos, secondaryDir, 0.5);
+  Particle secondary = primary.createSecondary(ParticleType::Electron,
+                                               secondaryPos, secondaryDir, 0.5);
 
   assert(secondary.type() == ParticleType::Electron);
   assert(secondary.position() == secondaryPos);
@@ -379,7 +393,8 @@ void testStringRepresentation()
 {
   std::cout << "Testing string representation..." << std::endl;
 
-  Particle p = Particle::createNeutron(Vector3D(1.0, 2.0, 3.0), Vector3D::UNIT_X, 1.5);
+  Particle p =
+      Particle::createNeutron(Vector3D(1.0, 2.0, 3.0), Vector3D::UNIT_X, 1.5);
   p.setGeneration(2);
 
   std::string str = p.toString();
@@ -406,7 +421,8 @@ void testComparisonOperators()
   Particle p1 = Particle::createPhoton(pos, dir, 1.5);
   Particle p2 = Particle::createPhoton(pos, dir, 1.5);
 
-  // They should be equal - comparison is based on physical properties, not history IDs
+  // They should be equal - comparison is based on physical properties, not
+  // history IDs
   assert(p1 == p2);
 
   // Test inequality with different properties
@@ -417,7 +433,8 @@ void testComparisonOperators()
   assert(p1 != p4);
 
   Vector3D differentPos(2.0, 3.0, 4.0);
-  Particle p5 = Particle::createPhoton(differentPos, dir, 1.5); // Different position
+  Particle p5 =
+      Particle::createPhoton(differentPos, dir, 1.5); // Different position
   assert(p1 != p5);
 
   // Test that particles with same physical properties are equal
@@ -531,7 +548,7 @@ void testErrorHandling()
   {
     Particle p(ParticleType::Photon, Vector3D::ZERO, Vector3D::UNIT_X, -1.0);
   }
-  catch (const std::invalid_argument &)
+  catch(const std::invalid_argument &)
   {
     threw = true;
   }
@@ -541,9 +558,10 @@ void testErrorHandling()
   threw = false;
   try
   {
-    Particle p(ParticleType::Photon, Vector3D::ZERO, Vector3D::UNIT_X, 1.0, -0.5);
+    Particle p(ParticleType::Photon, Vector3D::ZERO, Vector3D::UNIT_X, 1.0,
+               -0.5);
   }
-  catch (const std::invalid_argument &)
+  catch(const std::invalid_argument &)
   {
     threw = true;
   }
@@ -555,7 +573,7 @@ void testErrorHandling()
   {
     Particle p(ParticleType::Photon, Vector3D::ZERO, Vector3D::ZERO, 1.0);
   }
-  catch (const std::invalid_argument &)
+  catch(const std::invalid_argument &)
   {
     threw = true;
   }
@@ -567,7 +585,7 @@ void testErrorHandling()
   {
     Particle::getRestMass(static_cast<ParticleType>(999));
   }
-  catch (const std::invalid_argument &)
+  catch(const std::invalid_argument &)
   {
     threw = true;
   }
@@ -578,8 +596,7 @@ void testErrorHandling()
 
 int main()
 {
-  std::cout << "Running Particle comprehensive tests...\n"
-            << std::endl;
+  std::cout << "Running Particle comprehensive tests...\n" << std::endl;
 
   testConstructors();
   testStructuredBinding();
@@ -600,8 +617,11 @@ int main()
   testErrorHandling();
 
   std::cout << "\n🎉 All Particle tests passed successfully!" << std::endl;
-  std::cout << "Your Particle class is working correctly and ready for commit." << std::endl;
-  std::cout << "The class demonstrates excellent C++17 features and professional nuclear physics implementation." << std::endl;
+  std::cout << "Your Particle class is working correctly and ready for commit."
+            << std::endl;
+  std::cout << "The class demonstrates excellent C++17 features and "
+               "professional nuclear physics implementation."
+            << std::endl;
 
   return 0;
 }

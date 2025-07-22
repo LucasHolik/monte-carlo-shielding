@@ -1,70 +1,59 @@
 #include "Particle.hpp"
 
-#include <stdexcept>
-#include <sstream>
+#include <algorithm>
 #include <atomic>
 #include <cmath>
-#include <algorithm>
+#include <sstream>
+#include <stdexcept>
 
 // Physical constants (in appropriate units)
 namespace PhysicalConstants
 {
-  constexpr double SPEED_OF_LIGHT = 299792458.0;  // m/s
-  constexpr double ELECTRON_REST_MASS = 0.510999; // MeV/c²
-  constexpr double PROTON_REST_MASS = 938.272;    // MeV/c²
-  constexpr double NEUTRON_REST_MASS = 939.565;   // MeV/c²
-}
+constexpr double SPEED_OF_LIGHT = 299792458.0;  // m/s
+constexpr double ELECTRON_REST_MASS = 0.510999; // MeV/c²
+constexpr double PROTON_REST_MASS = 938.272;    // MeV/c²
+constexpr double NEUTRON_REST_MASS = 939.565;   // MeV/c²
+} // namespace PhysicalConstants
 
 // Static history ID counter
 static std::atomic<int> global_history_id{1};
 
 // Constructors
 Particle::Particle()
-    : position_(Vector3D::ZERO),
-      direction_(Vector3D::UNIT_Z),
-      energy_(0.0),
-      weight_(1.0),
-      type_(ParticleType::Photon),
-      state_(ParticleState::Alive),
-      generation_(0),
-      history_id_(getNextHistoryId())
+    : position_(Vector3D::ZERO), direction_(Vector3D::UNIT_Z), energy_(0.0),
+      weight_(1.0), type_(ParticleType::Photon), state_(ParticleState::Alive),
+      generation_(0), history_id_(getNextHistoryId())
 {
   validateConstruction();
 }
 
-Particle::Particle(ParticleType type, const Vector3D &position, const Vector3D &direction,
-                   double energy, double weight)
-    : position_(position),
-      direction_(direction),
-      energy_(energy),
-      weight_(weight),
-      type_(type),
-      state_(ParticleState::Alive),
-      birth_energy_(energy),
-      generation_(0),
-      history_id_(getNextHistoryId())
+Particle::Particle(ParticleType type, const Vector3D &position,
+                   const Vector3D &direction, double energy, double weight)
+    : position_(position), direction_(direction), energy_(energy),
+      weight_(weight), type_(type), state_(ParticleState::Alive),
+      birth_energy_(energy), generation_(0), history_id_(getNextHistoryId())
 {
   validateConstruction();
 }
 
 void Particle::validateConstruction()
 {
-  if (energy_ < 0.0)
+  if(energy_ < 0.0)
   {
     throw std::invalid_argument("Particle energy cannot be negative");
   }
-  if (weight_ <= 0.0)
+  if(weight_ <= 0.0)
   {
     throw std::invalid_argument("Particle weight must be positive");
   }
-  if (direction_.isZero())
+  if(direction_.isZero())
   {
     throw std::invalid_argument("Particle direction cannot be zero vector");
   }
 
   // Ensure direction is normalised
   auto normalised_direction = direction_.tryNormalise();
-  if (!normalised_direction)
+  if(!normalised_direction)
   {
     throw std::invalid_argument("Cannot normalise particle direction vector");
   }
@@ -74,7 +63,7 @@ void Particle::validateConstruction()
 // Safe mutators with std::optional
 std::optional<double> Particle::trySetEnergy(double new_energy)
 {
-  if (new_energy < 0.0)
+  if(new_energy < 0.0)
   {
     return std::nullopt;
   }
@@ -86,7 +75,7 @@ std::optional<double> Particle::trySetEnergy(double new_energy)
 
 std::optional<double> Particle::trySetWeight(double new_weight)
 {
-  if (new_weight <= 0.0)
+  if(new_weight <= 0.0)
   {
     return std::nullopt;
   }
@@ -99,7 +88,7 @@ std::optional<double> Particle::trySetWeight(double new_weight)
 std::optional<Vector3D> Particle::trySetDirection(const Vector3D &new_direction)
 {
   auto normalised = new_direction.tryNormalise();
-  if (!normalised)
+  if(!normalised)
   {
     return std::nullopt;
   }
@@ -118,12 +107,12 @@ void Particle::recordInteraction(const Vector3D &interaction_point)
 // Particle movement
 void Particle::move(double distance)
 {
-  if (distance < 0.0)
+  if(distance < 0.0)
   {
     throw std::invalid_argument("Cannot move particle negative distance");
   }
 
-  if (isAlive())
+  if(isAlive())
   {
     position_ += direction_ * distance;
   }
@@ -131,7 +120,7 @@ void Particle::move(double distance)
 
 void Particle::moveToPosition(const Vector3D &new_position)
 {
-  if (isAlive())
+  if(isAlive())
   {
     position_ = new_position;
   }
@@ -140,7 +129,7 @@ void Particle::moveToPosition(const Vector3D &new_position)
 // Energy operations
 std::optional<double> Particle::loseEnergy(double energy_loss)
 {
-  if (energy_loss < 0.0 || energy_loss > energy_)
+  if(energy_loss < 0.0 || energy_loss > energy_)
   {
     return std::nullopt;
   }
@@ -149,7 +138,7 @@ std::optional<double> Particle::loseEnergy(double energy_loss)
   energy_ -= energy_loss;
 
   // Check if particle should be terminated due to low energy
-  if (energy_ < 1e-6)
+  if(energy_ < 1e-6)
   { // 1 eV threshold
     kill();
   }
@@ -159,7 +148,7 @@ std::optional<double> Particle::loseEnergy(double energy_loss)
 
 double Particle::getKineticEnergy() const
 {
-  if (type_ == ParticleType::Photon)
+  if(type_ == ParticleType::Photon)
   {
     return energy_; // Photons: E = pc, no rest mass
   }
@@ -170,14 +159,11 @@ double Particle::getKineticEnergy() const
   }
 }
 
-double Particle::getRestMassEnergy() const
-{
-  return getRestMass(type_);
-}
+double Particle::getRestMassEnergy() const { return getRestMass(type_); }
 
 double Particle::getTotalEnergy() const
 {
-  if (type_ == ParticleType::Photon)
+  if(type_ == ParticleType::Photon)
   {
     return energy_;
   }
@@ -190,7 +176,7 @@ double Particle::getTotalEnergy() const
 // Relativistic calculations
 double Particle::getSpeed() const
 {
-  if (type_ == ParticleType::Photon)
+  if(type_ == ParticleType::Photon)
   {
     return 1.0; // Speed of light in natural units (c = 1)
   }
@@ -206,7 +192,7 @@ double Particle::getBeta() const
 
 double Particle::getGamma() const
 {
-  if (type_ == ParticleType::Photon)
+  if(type_ == ParticleType::Photon)
   {
     return std::numeric_limits<double>::infinity();
   }
@@ -217,7 +203,7 @@ double Particle::getGamma() const
 
 double Particle::getMomentum() const
 {
-  if (type_ == ParticleType::Photon)
+  if(type_ == ParticleType::Photon)
   {
     return energy_; // p = E/c for photons
   }
@@ -230,14 +216,12 @@ double Particle::getMomentum() const
 }
 
 // Utility methods
-bool Particle::isCharged() const
-{
-  return getCharge(type_) != 0;
-}
+bool Particle::isCharged() const { return getCharge(type_) != 0; }
 
 // Secondary particle creation
 Particle Particle::createSecondary(ParticleType type, const Vector3D &position,
-                                   const Vector3D &direction, double energy) const
+                                   const Vector3D &direction,
+                                   double energy) const
 {
   Particle secondary(type, position, direction, energy);
   secondary.setGeneration(generation_ + 1);
@@ -250,7 +234,8 @@ std::string Particle::toString() const
 {
   std::stringstream ss;
   ss << getTypeName() << " [" << getStateName() << "] "
-     << "at (" << position_.x() << ", " << position_.y() << ", " << position_.z() << ") "
+     << "at (" << position_.x() << ", " << position_.y() << ", "
+     << position_.z() << ") "
      << "with energy " << energy_ << " MeV, "
      << "weight " << weight_ << ", "
      << "generation " << generation_;
@@ -271,10 +256,8 @@ std::string Particle::getStateName() const
 bool Particle::operator==(const Particle &other) const
 {
   constexpr double tolerance = 1e-10;
-  return type_ == other.type_ &&
-         state_ == other.state_ &&
-         position_ == other.position_ &&
-         direction_ == other.direction_ &&
+  return type_ == other.type_ && state_ == other.state_ &&
+         position_ == other.position_ && direction_ == other.direction_ &&
          std::abs(energy_ - other.energy_) < tolerance &&
          std::abs(weight_ - other.weight_) < tolerance &&
          generation_ == other.generation_;
@@ -286,22 +269,26 @@ bool Particle::operator!=(const Particle &other) const
 }
 
 // Static factory methods
-Particle Particle::createPhoton(const Vector3D &position, const Vector3D &direction, double energy)
+Particle Particle::createPhoton(const Vector3D &position,
+                                const Vector3D &direction, double energy)
 {
   return Particle(ParticleType::Photon, position, direction, energy);
 }
 
-Particle Particle::createNeutron(const Vector3D &position, const Vector3D &direction, double energy)
+Particle Particle::createNeutron(const Vector3D &position,
+                                 const Vector3D &direction, double energy)
 {
   return Particle(ParticleType::Neutron, position, direction, energy);
 }
 
-Particle Particle::createElectron(const Vector3D &position, const Vector3D &direction, double energy)
+Particle Particle::createElectron(const Vector3D &position,
+                                  const Vector3D &direction, double energy)
 {
   return Particle(ParticleType::Electron, position, direction, energy);
 }
 
-Particle Particle::createProton(const Vector3D &position, const Vector3D &direction, double energy)
+Particle Particle::createProton(const Vector3D &position,
+                                const Vector3D &direction, double energy)
 {
   return Particle(ParticleType::Proton, position, direction, energy);
 }
@@ -309,7 +296,7 @@ Particle Particle::createProton(const Vector3D &position, const Vector3D &direct
 // Physical constants
 double Particle::getRestMass(ParticleType type)
 {
-  switch (type)
+  switch(type)
   {
   case ParticleType::Photon:
     return 0.0; // Massless
@@ -326,7 +313,7 @@ double Particle::getRestMass(ParticleType type)
 
 int Particle::getCharge(ParticleType type)
 {
-  switch (type)
+  switch(type)
   {
   case ParticleType::Photon:
     return 0;
@@ -343,7 +330,7 @@ int Particle::getCharge(ParticleType type)
 
 std::string Particle::getParticleSymbol(ParticleType type)
 {
-  switch (type)
+  switch(type)
   {
   case ParticleType::Photon:
     return "γ";
@@ -359,15 +346,12 @@ std::string Particle::getParticleSymbol(ParticleType type)
 }
 
 // Private methods
-int Particle::getNextHistoryId()
-{
-  return global_history_id.fetch_add(1);
-}
+int Particle::getNextHistoryId() { return global_history_id.fetch_add(1); }
 
 // Utility functions
 std::string particleTypeToString(ParticleType type)
 {
-  switch (type)
+  switch(type)
   {
   case ParticleType::Photon:
     return "Photon";
@@ -384,7 +368,7 @@ std::string particleTypeToString(ParticleType type)
 
 std::string particleStateToString(ParticleState state)
 {
-  switch (state)
+  switch(state)
   {
   case ParticleState::Alive:
     return "Alive";
@@ -406,21 +390,22 @@ std::string particleStateToString(ParticleState state)
 std::optional<ParticleType> stringToParticleType(const std::string &type_str)
 {
   std::string lower_str = type_str;
-  std::transform(lower_str.begin(), lower_str.end(), lower_str.begin(), ::tolower);
+  std::transform(lower_str.begin(), lower_str.end(), lower_str.begin(),
+                 ::tolower);
 
-  if (lower_str == "photon" || lower_str == "gamma")
+  if(lower_str == "photon" || lower_str == "gamma")
   {
     return ParticleType::Photon;
   }
-  else if (lower_str == "neutron")
+  else if(lower_str == "neutron")
   {
     return ParticleType::Neutron;
   }
-  else if (lower_str == "electron")
+  else if(lower_str == "electron")
   {
     return ParticleType::Electron;
   }
-  else if (lower_str == "proton")
+  else if(lower_str == "proton")
   {
     return ParticleType::Proton;
   }

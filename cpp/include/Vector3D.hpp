@@ -33,10 +33,7 @@ public:
   void set(double x, double y, double z);
 
   // C++17 structured binding support
-  auto getComponents() const
-  {
-    return std::make_tuple(x_, y_, z_);
-  }
+  auto getComponents() const { return std::make_tuple(x_, y_, z_); }
 
   // Vector operations
   Vector3D operator+(const Vector3D &other) const;

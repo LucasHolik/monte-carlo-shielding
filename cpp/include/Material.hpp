@@ -1,11 +1,11 @@
 #pragma once
 
+#include <optional>
 #include <string>
 #include <string_view>
-#include <variant>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#include <optional>
 
 /**
  * @brief Type-safe material property storage using C++17 std::variant
@@ -29,18 +29,20 @@ struct ElementComposition
 /**
  * @brief Material class for Monte Carlo radiation transport simulation
  *
- * Modern C++17 implementation supporting both pure elements and compound materials
- * with type-safe property storage and comprehensive nuclear physics calculations.
+ * Modern C++17 implementation supporting both pure elements and compound
+ * materials with type-safe property storage and comprehensive nuclear physics
+ * calculations.
  */
 class Material
 {
 private:
   std::string name_;
-  double density_;                                               // g/cm³
-  std::vector<ElementComposition> composition_;                  // Elements in material
-  std::unordered_map<std::string, MaterialProperty> properties_; // Additional properties
-  mutable std::optional<double> effective_z_;                    // Cached effective Z
-  mutable std::optional<double> effective_a_;                    // Cached effective A
+  double density_;                              // g/cm³
+  std::vector<ElementComposition> composition_; // Elements in material
+  std::unordered_map<std::string, MaterialProperty>
+      properties_;                            // Additional properties
+  mutable std::optional<double> effective_z_; // Cached effective Z
+  mutable std::optional<double> effective_a_; // Cached effective A
 
 public:
   // Constructors
@@ -54,7 +56,10 @@ public:
   // Basic accessors
   std::string_view name() const { return name_; }
   double density() const { return density_; }
-  const std::vector<ElementComposition> &composition() const { return composition_; }
+  const std::vector<ElementComposition> &composition() const
+  {
+    return composition_;
+  }
   size_t getNumberOfElements() const { return composition_.size(); }
   bool isEmpty() const { return composition_.empty(); }
 
@@ -70,18 +75,17 @@ public:
   void normaliseWeightFractions();
 
   // Property management with C++17 template features
-  template <typename T>
-  void setProperty(std::string_view name, const T &value)
+  template <typename T> void setProperty(std::string_view name, const T &value)
   {
-    if constexpr (std::is_same_v<T, double> || std::is_same_v<T, int>)
+    if constexpr(std::is_same_v<T, double> || std::is_same_v<T, int>)
     {
       properties_[std::string(name)] = value;
     }
-    else if constexpr (std::is_same_v<T, std::string>)
+    else if constexpr(std::is_same_v<T, std::string>)
     {
       properties_[std::string(name)] = value;
     }
-    else if constexpr (std::is_convertible_v<T, std::string>)
+    else if constexpr(std::is_convertible_v<T, std::string>)
     {
       properties_[std::string(name)] = std::string(value);
     }
@@ -92,25 +96,25 @@ public:
   std::optional<T> getProperty(std::string_view name) const
   {
     auto it = properties_.find(std::string(name));
-    if (it != properties_.end())
+    if(it != properties_.end())
     {
-      if constexpr (std::is_same_v<T, double>)
+      if constexpr(std::is_same_v<T, double>)
       {
-        if (std::holds_alternative<double>(it->second))
+        if(std::holds_alternative<double>(it->second))
         {
           return std::get<double>(it->second);
         }
       }
-      else if constexpr (std::is_same_v<T, int>)
+      else if constexpr(std::is_same_v<T, int>)
       {
-        if (std::holds_alternative<int>(it->second))
+        if(std::holds_alternative<int>(it->second))
         {
           return std::get<int>(it->second);
         }
       }
-      else if constexpr (std::is_same_v<T, std::string>)
+      else if constexpr(std::is_same_v<T, std::string>)
       {
-        if (std::holds_alternative<std::string>(it->second))
+        if(std::holds_alternative<std::string>(it->second))
         {
           return std::get<std::string>(it->second);
         }
@@ -126,14 +130,16 @@ public:
   // Nuclear physics calculations
   double getEffectiveAtomicNumber() const;
   double getEffectiveAtomicMass() const;
-  double getElectronDensity() const;                // electrons/cm³
-  double getAtomDensity() const;                    // atoms/cm³
-  double getNumberDensity(int atomic_number) const; // atoms/cm³ for specific element
+  double getElectronDensity() const; // electrons/cm³
+  double getAtomDensity() const;     // atoms/cm³
+  double
+  getNumberDensity(int atomic_number) const; // atoms/cm³ for specific element
 
   // Advanced material properties
-  double getRadiationLength() const;                     // g/cm² (approximate)
-  double getNuclearInteractionLength() const;            // g/cm² (approximate)
-  std::optional<double> getMeanExcitationEnergy() const; // I-value for energy loss calculations
+  double getRadiationLength() const;          // g/cm² (approximate)
+  double getNuclearInteractionLength() const; // g/cm² (approximate)
+  std::optional<double>
+  getMeanExcitationEnergy() const; // I-value for energy loss calculations
 
   // Validation
   bool isValid() const;
@@ -174,8 +180,9 @@ public:
                                 std::string_view symbol = "");
 
   // Compound material factory
-  static Material createCompound(std::string_view name, double density,
-                                 const std::vector<ElementComposition> &elements);
+  static Material
+  createCompound(std::string_view name, double density,
+                 const std::vector<ElementComposition> &elements);
 
   // Physical constants access
   static double getStandardAtomicMass(int atomic_number);
@@ -191,6 +198,9 @@ private:
 };
 
 // Utility functions for material calculations
-double calculateMeanAtomicMass(const std::vector<ElementComposition> &composition);
-double calculateMeanAtomicNumber(const std::vector<ElementComposition> &composition);
-std::string formatChemicalFormula(const std::vector<ElementComposition> &composition);
+double
+calculateMeanAtomicMass(const std::vector<ElementComposition> &composition);
+double
+calculateMeanAtomicNumber(const std::vector<ElementComposition> &composition);
+std::string
+formatChemicalFormula(const std::vector<ElementComposition> &composition);

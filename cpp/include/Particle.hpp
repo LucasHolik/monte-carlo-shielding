@@ -3,8 +3,8 @@
 #include "Vector3D.hpp"
 
 #include <optional>
-#include <variant>
 #include <string>
+#include <variant>
 
 /**
  * @brief Particle types supported by the Monte Carlo simulator
@@ -47,14 +47,14 @@ private:
   ParticleState state_;
   std::optional<Vector3D> last_interaction_point_;
   std::optional<double> birth_energy_; // Initial energy for analysis
-  int generation_;                     // Track particle generation (0 = primary)
-  int history_id_;                     // Unique identifier for this particle history
+  int generation_; // Track particle generation (0 = primary)
+  int history_id_; // Unique identifier for this particle history
 
 public:
   // Constructors
   Particle();
-  Particle(ParticleType type, const Vector3D &position, const Vector3D &direction,
-           double energy, double weight = 1.0);
+  Particle(ParticleType type, const Vector3D &position,
+           const Vector3D &direction, double energy, double weight = 1.0);
   Particle(const Particle &other) = default;
   Particle &operator=(const Particle &other) = default;
   Particle(Particle &&other) noexcept = default;
@@ -76,15 +76,9 @@ public:
     return std::make_pair(position_, direction_);
   }
 
-  auto getEnergyAndWeight() const
-  {
-    return std::make_tuple(energy_, weight_);
-  }
+  auto getEnergyAndWeight() const { return std::make_tuple(energy_, weight_); }
 
-  auto getTypeAndState() const
-  {
-    return std::make_pair(type_, state_);
-  }
+  auto getTypeAndState() const { return std::make_pair(type_, state_); }
 
   // Safe mutators with C++17 std::optional
   std::optional<double> trySetEnergy(double new_energy);
@@ -102,7 +96,10 @@ public:
 
   // Interaction tracking
   void recordInteraction(const Vector3D &interaction_point);
-  std::optional<Vector3D> getLastInteractionPoint() const { return last_interaction_point_; }
+  std::optional<Vector3D> getLastInteractionPoint() const
+  {
+    return last_interaction_point_;
+  }
 
   std::optional<double> getBirthEnergy() const { return birth_energy_; }
   void setBirthEnergy(double energy) { birth_energy_ = energy; }
@@ -151,10 +148,14 @@ public:
   bool operator!=(const Particle &other) const;
 
   // Static factory methods
-  static Particle createPhoton(const Vector3D &position, const Vector3D &direction, double energy);
-  static Particle createNeutron(const Vector3D &position, const Vector3D &direction, double energy);
-  static Particle createElectron(const Vector3D &position, const Vector3D &direction, double energy);
-  static Particle createProton(const Vector3D &position, const Vector3D &direction, double energy);
+  static Particle createPhoton(const Vector3D &position,
+                               const Vector3D &direction, double energy);
+  static Particle createNeutron(const Vector3D &position,
+                                const Vector3D &direction, double energy);
+  static Particle createElectron(const Vector3D &position,
+                                 const Vector3D &direction, double energy);
+  static Particle createProton(const Vector3D &position,
+                               const Vector3D &direction, double energy);
 
   // Physical constants access
   static double getRestMass(ParticleType type); // MeV/c²

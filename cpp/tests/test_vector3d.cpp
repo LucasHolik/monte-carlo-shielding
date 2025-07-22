@@ -1,9 +1,11 @@
+#define _USE_MATH_DEFINES // M_PI is used
+
 #include "Particle.hpp"
 #include "Vector3D.hpp"
 
-#include <iostream>
 #include <cassert>
 #include <cmath>
+#include <iostream>
 #include <stdexcept>
 
 void testConstructors()
@@ -234,7 +236,7 @@ void testNormalisation()
   {
     v2.normalise();
   }
-  catch (const std::invalid_argument &)
+  catch(const std::invalid_argument &)
   {
     threw = true;
   }
@@ -304,7 +306,7 @@ void testErrorHandling()
   {
     v1 / 0.0;
   }
-  catch (const std::invalid_argument &)
+  catch(const std::invalid_argument &)
   {
     threw = true;
   }
@@ -315,7 +317,7 @@ void testErrorHandling()
   {
     v1 /= 0.0;
   }
-  catch (const std::invalid_argument &)
+  catch(const std::invalid_argument &)
   {
     threw = true;
   }
@@ -347,7 +349,7 @@ void testUtilityFunctions()
   {
     angleBetween(v1, zero);
   }
-  catch (const std::invalid_argument &)
+  catch(const std::invalid_argument &)
   {
     threw = true;
   }
@@ -358,8 +360,7 @@ void testUtilityFunctions()
 
 int main()
 {
-  std::cout << "Running Vector3D comprehensive tests...\n"
-            << std::endl;
+  std::cout << "Running Vector3D comprehensive tests...\n" << std::endl;
 
   testConstructors();
   testAccessorsAndMutators();
@@ -377,7 +378,8 @@ int main()
   testUtilityFunctions();
 
   std::cout << "\n🎉 All Vector3D tests passed successfully!" << std::endl;
-  std::cout << "Your Vector3D class is working correctly and ready for commit." << std::endl;
+  std::cout << "Your Vector3D class is working correctly and ready for commit."
+            << std::endl;
 
   return 0;
 }

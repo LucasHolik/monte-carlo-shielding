@@ -1,11 +1,11 @@
 #include "Material.hpp"
 
-#include <iostream>
+#include <algorithm>
 #include <cassert>
 #include <cmath>
+#include <iostream>
 #include <stdexcept>
 #include <string>
-#include <algorithm>
 
 void testConstructors()
 {
@@ -114,7 +114,8 @@ void testElementComposition()
 
 void testPropertyManagement()
 {
-  std::cout << "Testing C++17 property management with templates..." << std::endl;
+  std::cout << "Testing C++17 property management with templates..."
+            << std::endl;
 
   Material material("Test", 1.0);
 
@@ -202,8 +203,9 @@ void testNuclearPhysicsCalculations()
   double effectiveZ = water.getEffectiveAtomicNumber();
   double effectiveA = water.getEffectiveAtomicMass();
 
-  assert(effectiveZ > 1.0 && effectiveZ < 8.0);  // Should be between H and O
-  assert(effectiveA > 1.0 && effectiveA < 16.0); // Should be between H and O masses
+  assert(effectiveZ > 1.0 && effectiveZ < 8.0); // Should be between H and O
+  assert(effectiveA > 1.0 &&
+         effectiveA < 16.0); // Should be between H and O masses
 
   // Test densities
   double electronDensity = water.getElectronDensity();
@@ -265,7 +267,7 @@ void testValidation()
   {
     Material invalid1("Invalid", -1.0);
   }
-  catch (const std::invalid_argument &)
+  catch(const std::invalid_argument &)
   {
     threw = true;
   }
@@ -278,7 +280,7 @@ void testValidation()
   {
     invalid2.addElement(-1, 1.0, 1.0, "X");
   }
-  catch (const std::invalid_argument &)
+  catch(const std::invalid_argument &)
   {
     threw = true;
   }
@@ -291,7 +293,7 @@ void testValidation()
   {
     invalid3.addElement(1, 1.0, 1.5, "H"); // > 1.0
   }
-  catch (const std::invalid_argument &)
+  catch(const std::invalid_argument &)
   {
     threw = true;
   }
@@ -374,7 +376,8 @@ void testFactoryMethods()
   std::vector<ElementComposition> elements = {
       ElementComposition(1, 1.008, 0.2, "H"),
       ElementComposition(6, 12.01, 0.8, "C")};
-  Material compound = Material::createCompound("Custom Compound", 1.5, elements);
+  Material compound =
+      Material::createCompound("Custom Compound", 1.5, elements);
   assert(compound.name() == "Custom Compound");
   assert(compound.density() == 1.5);
   assert(compound.getNumberOfElements() == 2);
@@ -449,7 +452,8 @@ void testStaticUtilityMethods()
   std::cout << "Testing static utility methods..." << std::endl;
 
   // Test atomic masses
-  assert(std::abs(Material::getStandardAtomicMass(1) - 1.008) < 0.1);  // Hydrogen
+  assert(std::abs(Material::getStandardAtomicMass(1) - 1.008) <
+         0.1); // Hydrogen
   assert(std::abs(Material::getStandardAtomicMass(6) - 12.01) < 0.1);  // Carbon
   assert(std::abs(Material::getStandardAtomicMass(82) - 207.2) < 1.0); // Lead
 
@@ -518,7 +522,8 @@ void testUtilityFunctions()
   assert(emptyFormula == "Vacuum");
 
   // Test single element
-  std::vector<ElementComposition> single = {ElementComposition(26, 55.85, 1.0, "Fe")};
+  std::vector<ElementComposition> single = {
+      ElementComposition(26, 55.85, 1.0, "Fe")};
   std::string singleFormula = formatChemicalFormula(single);
   assert(singleFormula == "Fe");
 
@@ -535,7 +540,7 @@ void testErrorHandling()
   {
     Material invalid("Test", -1.0);
   }
-  catch (const std::invalid_argument &)
+  catch(const std::invalid_argument &)
   {
     threw = true;
   }
@@ -548,7 +553,7 @@ void testErrorHandling()
   {
     material.setDensity(-1.0);
   }
-  catch (const std::invalid_argument &)
+  catch(const std::invalid_argument &)
   {
     threw = true;
   }
@@ -560,7 +565,7 @@ void testErrorHandling()
   {
     ElementComposition invalid(-1, 1.0, 0.5, "X");
   }
-  catch (const std::invalid_argument &)
+  catch(const std::invalid_argument &)
   {
     threw = true;
   }
@@ -571,7 +576,7 @@ void testErrorHandling()
   {
     ElementComposition invalid(999, 1.0, 0.5, "X");
   }
-  catch (const std::invalid_argument &)
+  catch(const std::invalid_argument &)
   {
     threw = true;
   }
@@ -583,7 +588,7 @@ void testErrorHandling()
   {
     ElementComposition invalid(1, -1.0, 0.5, "H");
   }
-  catch (const std::invalid_argument &)
+  catch(const std::invalid_argument &)
   {
     threw = true;
   }
@@ -595,7 +600,7 @@ void testErrorHandling()
   {
     ElementComposition invalid(1, 1.0, -0.1, "H");
   }
-  catch (const std::invalid_argument &)
+  catch(const std::invalid_argument &)
   {
     threw = true;
   }
@@ -606,7 +611,7 @@ void testErrorHandling()
   {
     ElementComposition invalid(1, 1.0, 1.5, "H");
   }
-  catch (const std::invalid_argument &)
+  catch(const std::invalid_argument &)
   {
     threw = true;
   }
@@ -618,7 +623,7 @@ void testErrorHandling()
   {
     Material::getStandardAtomicMass(-1);
   }
-  catch (const std::invalid_argument &)
+  catch(const std::invalid_argument &)
   {
     threw = true;
   }
@@ -629,7 +634,7 @@ void testErrorHandling()
   {
     Material::getStandardAtomicMass(999);
   }
-  catch (const std::invalid_argument &)
+  catch(const std::invalid_argument &)
   {
     threw = true;
   }
@@ -641,7 +646,7 @@ void testErrorHandling()
   {
     Material::createElement(-1, 1.0);
   }
-  catch (const std::invalid_argument &)
+  catch(const std::invalid_argument &)
   {
     threw = true;
   }
@@ -678,8 +683,8 @@ void testCacheInvalidation()
   material.setDensity(2.0);
   double afterDensityZ = material.getEffectiveAtomicNumber();
 
-  // Effective Z shouldn't change with density, but we're testing cache invalidation
-  // The values should be the same but recalculated
+  // Effective Z shouldn't change with density, but we're testing cache
+  // invalidation The values should be the same but recalculated
   assert(std::abs(afterDensityZ - beforeDensityZ) < 1e-10);
 
   std::cout << "✓ Cache invalidation passed" << std::endl;
@@ -714,7 +719,7 @@ void testSpecialCases()
   {
     ElementComposition invalid(1, 0.0, 0.5, "H");
   }
-  catch (const std::invalid_argument &)
+  catch(const std::invalid_argument &)
   {
     threw = true;
   }
@@ -725,8 +730,7 @@ void testSpecialCases()
 
 int main()
 {
-  std::cout << "Running Material comprehensive tests...\n"
-            << std::endl;
+  std::cout << "Running Material comprehensive tests...\n" << std::endl;
 
   testConstructors();
   testBasicAccessorsAndMutators();
@@ -745,9 +749,14 @@ int main()
   testSpecialCases();
 
   std::cout << "\n🎉 All Material tests passed successfully!" << std::endl;
-  std::cout << "Your Material class is working correctly and ready for commit." << std::endl;
-  std::cout << "The class demonstrates excellent C++17 features and professional nuclear physics implementation." << std::endl;
-  std::cout << "Nuclear physics calculations, type-safe properties, and comprehensive validation all working perfectly!" << std::endl;
+  std::cout << "Your Material class is working correctly and ready for commit."
+            << std::endl;
+  std::cout << "The class demonstrates excellent C++17 features and "
+               "professional nuclear physics implementation."
+            << std::endl;
+  std::cout << "Nuclear physics calculations, type-safe properties, and "
+               "comprehensive validation all working perfectly!"
+            << std::endl;
 
   return 0;
 }

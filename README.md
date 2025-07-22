@@ -45,7 +45,7 @@ Radiation shielding calculations, dose assessment, and nuclear safety analysis -
 
 ```bash
 # Clone and setup
-git clone <repository-url>
+git clone https://github.com/LucasHolik/monte-carlo-shielding.git
 cd monte_carlo_shielding
 
 # Create virtual environment

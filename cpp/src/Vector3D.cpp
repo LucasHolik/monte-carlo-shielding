@@ -1,4 +1,5 @@
 #include "Vector3D.hpp"
+
 #include <stdexcept>
 #include <cmath>
 #include <algorithm>

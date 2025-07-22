@@ -45,8 +45,6 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 
 ### **Monday - Day 1: Project Setup & Environment**
 
-**Estimated Time**: 6-8 hours
-
 - [x] Install development environment:
   - Visual Studio/CLion for C++
   - Python 3.8+ with pip
@@ -85,9 +83,7 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 
 ### **Tuesday - Day 2: Core Data Structures**
 
-**Estimated Time**: 6-8 hours
-
-- [ ] Design and implement `Vector3D` class:
+- [x] Design and implement `Vector3D` class:
 
   ```cpp
   class Vector3D {
@@ -99,7 +95,7 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
   };
   ```
 
-- [ ] Create comprehensive `Particle` class:
+- [x] Create comprehensive `Particle` class:
 
   ```cpp
   class Particle {
@@ -117,8 +113,6 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 - **Success Metric**: All core classes working with passing unit tests
 
 ### **Wednesday - Day 3: Basic Geometry Engine**
-
-**Estimated Time**: 6-8 hours
 
 - [ ] Implement `Box` geometry class (rectangular shielding):
 
@@ -140,8 +134,6 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 
 ### **Thursday - Day 4: Monte Carlo Sampling Foundation**
 
-**Estimated Time**: 6-8 hours
-
 - [ ] Research and implement Monte Carlo sampling techniques:
   - Exponential sampling for interaction distances
   - Uniform spherical direction sampling
@@ -160,8 +152,6 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 - **Success Metric**: Robust, validated sampling foundation with statistical tests
 
 ### **Friday - Day 5: Basic Particle Transport**
-
-**Estimated Time**: 6-8 hours
 
 - [ ] Implement core particle transport loop:
 
@@ -189,8 +179,6 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 
 ### **Monday - Day 8: Photon Physics Foundation**
 
-**Estimated Time**: 6-8 hours
-
 - [ ] Research photon interaction cross-sections from NIST data
 - [ ] Implement photoelectric absorption:
 
@@ -211,8 +199,6 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 
 ### **Tuesday - Day 9: Complete Photon Physics**
 
-**Estimated Time**: 6-8 hours
-
 - [ ] Add pair production for high-energy photons (>1.022 MeV)
 - [ ] Implement Rayleigh (coherent) scattering
 - [ ] Create total cross-section calculations:
@@ -228,8 +214,6 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 - **Success Metric**: Complete, validated photon interaction physics
 
 ### **Wednesday - Day 10: Energy-Dependent Cross-Sections**
-
-**Estimated Time**: 6-8 hours
 
 - [ ] Implement cross-section database structure:
 
@@ -249,8 +233,6 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 
 ### **Thursday - Day 11: Integrated Photon Monte Carlo**
 
-**Estimated Time**: 6-8 hours
-
 - [ ] Integrate all physics with transport engine
 - [ ] Implement complete photon history tracking:
 
@@ -265,8 +247,6 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 - **Success Metric**: Working end-to-end photon Monte Carlo simulator
 
 ### **Friday - Day 12: Validation & Benchmarking**
-
-**Estimated Time**: 6-8 hours
 
 - [ ] Create validation test cases using analytical solutions
 - [ ] Compare results with Beer-Lambert law for simple cases
@@ -283,8 +263,6 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 
 ### **Monday - Day 15: Neutron Physics Implementation**
 
-**Estimated Time**: 6-8 hours
-
 - [ ] Research neutron interaction cross-sections and libraries
 - [ ] Implement elastic scattering in center-of-mass system:
 
@@ -300,8 +278,6 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 
 ### **Tuesday - Day 16: Electron Transport Physics**
 
-**Estimated Time**: 6-8 hours
-
 - [ ] Implement electron energy loss (Bethe-Bloch formula):
 
   ```cpp
@@ -316,8 +292,6 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 - **Success Metric**: Realistic electron transport with energy loss
 
 ### **Wednesday - Day 17: Proton Transport & Advanced Geometry**
-
-**Estimated Time**: 6-8 hours
 
 - [ ] Implement basic proton energy loss and range calculations
 - [ ] Add Coulomb scattering for charged particles
@@ -338,8 +312,6 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 
 ### **Thursday - Day 18: Performance Optimization**
 
-**Estimated Time**: 6-8 hours
-
 - [ ] Add OpenMP parallelization for particle histories:
 
   ```cpp
@@ -359,8 +331,6 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 
 ### **Friday - Day 19: Advanced Features & Testing**
 
-**Estimated Time**: 6-8 hours
-
 - [ ] Add geometry visualization helpers
 - [ ] Implement particle track recording for visualization
 - [ ] Create comprehensive test suite for all physics
@@ -375,8 +345,6 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 ## **WEEK 4: Python Integration & Core Interface**
 
 ### **Monday - Day 22: Python Bindings Foundation**
-
-**Estimated Time**: 6-8 hours
 
 - [ ] Create comprehensive pybind11 interface:
 
@@ -399,8 +367,6 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 
 ### **Tuesday - Day 23: Python Data Interface**
 
-**Estimated Time**: 6-8 hours
-
 - [ ] Complete all Python bindings for simulation results
 - [ ] Add numpy array integration for large datasets:
 
@@ -416,8 +382,6 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 - **Success Metric**: Seamless, efficient data flow C++ ↔ Python
 
 ### **Wednesday - Day 24: Python Visualization Tools**
-
-**Estimated Time**: 6-8 hours
 
 - [ ] Create dose distribution plotting functions:
 
@@ -438,8 +402,6 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 
 ### **Thursday - Day 25: Advanced Python Tools**
 
-**Estimated Time**: 6-8 hours
-
 - [ ] Create simulation comparison tools
 - [ ] Add optimization functions (finding optimal shielding thickness)
 - [ ] Implement data export capabilities (CSV, JSON)
@@ -449,8 +411,6 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 - **Success Metric**: Complete Python toolkit for analysis
 
 ### **Friday - Day 26: Python Testing & Integration**
-
-**Estimated Time**: 6-8 hours
 
 - [ ] Create comprehensive Python test suite
 - [ ] Test all Python-C++ integration
@@ -465,8 +425,6 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 ## **WEEK 5: Streamlit Web Application & Professional Polish**
 
 ### **Monday - Day 29: Core Streamlit Application**
-
-**Estimated Time**: 6-8 hours
 
 - [ ] Set up basic Streamlit application framework:
 
@@ -490,8 +448,6 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 
 ### **Tuesday - Day 30: Simulation Integration & Basic Results**
 
-**Estimated Time**: 6-8 hours
-
 - [ ] Integrate C++ simulation engine with Streamlit:
 
   ```python
@@ -513,8 +469,6 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 
 ### **Wednesday - Day 31: Advanced Visualization**
 
-**Estimated Time**: 6-8 hours
-
 - [ ] Add 3D geometry visualization in Streamlit:
 
   ```python
@@ -530,8 +484,6 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 - **Success Metric**: Rich, interactive visualizations
 
 ### **Thursday - Day 32: Professional Features & UX**
-
-**Estimated Time**: 6-8 hours
 
 - [ ] Add comparison tools (multiple materials/configurations):
 
@@ -549,8 +501,6 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 - **Success Metric**: Professional, user-friendly interface
 
 ### **Friday - Day 33: Final Polish & Documentation**
-
-**Estimated Time**: 6-8 hours
 
 - [ ] Comprehensive testing of entire application
 - [ ] Create user guide and documentation

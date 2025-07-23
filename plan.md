@@ -126,8 +126,8 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
   ```
 
 - [x] Add boundary detection methods and ray-box intersection algorithms
-- [ ] Create simple `Geometry` container class for multiple regions
-- [ ] Test particle-boundary interactions thoroughly
+- [x] Create simple `Geometry` container class for multiple regions
+- [x] Test particle-boundary interactions thoroughly
 - [ ] Add material assignment to geometry regions
 - [ ] Implement boundary crossing logic
 - **Success Metric**: Particles can navigate through box geometry with proper material transitions

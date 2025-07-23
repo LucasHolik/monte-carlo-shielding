@@ -107,14 +107,14 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
   ```
 
 - [x] Implement basic `Material` class with atomic properties
-- [ ] Create `RandomNumberGenerator` class with proper seeding
-- [ ] Write unit tests for all basic functionality
-- [ ] Document all classes with clear comments
+- [x] Create `RandomNumberGenerator` class with proper seeding
+- [x] Write unit tests for all basic functionality
+- [x] Document all classes with clear comments
 - **Success Metric**: All core classes working with passing unit tests
 
 ### **Wednesday - Day 3: Basic Geometry Engine**
 
-- [ ] Implement `Box` geometry class (rectangular shielding):
+- [x] Implement `Box` geometry class (rectangular shielding):
 
   ```cpp
   class Box {
@@ -125,7 +125,7 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
   };
   ```
 
-- [ ] Add boundary detection methods and ray-box intersection algorithms
+- [x] Add boundary detection methods and ray-box intersection algorithms
 - [ ] Create simple `Geometry` container class for multiple regions
 - [ ] Test particle-boundary interactions thoroughly
 - [ ] Add material assignment to geometry regions

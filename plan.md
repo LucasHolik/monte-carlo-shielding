@@ -134,11 +134,11 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 
 ### **Thursday - Day 4: Monte Carlo Sampling Foundation**
 
-- [ ] Research and implement Monte Carlo sampling techniques:
+- [x] Research and implement Monte Carlo sampling techniques:
   - Exponential sampling for interaction distances
   - Uniform spherical direction sampling
   - Energy distribution sampling
-- [ ] Create sampling utility functions:
+- [x] Create sampling utility functions:
 
   ```cpp
   double sampleExponential(double lambda);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "RandomNumberGenerator.hpp"
+
 #include <functional>
 #include <map>
 #include <optional>

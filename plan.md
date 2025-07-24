@@ -147,7 +147,7 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
   ```
 
 - [x] Implement and test random number quality
-- [ ] Add statistical validation for sampling distributions
+- [x] Add statistical validation for sampling distributions
 - [ ] Create debugging tools for sampling verification
 - **Success Metric**: Robust, validated sampling foundation with statistical tests
 

@@ -58,7 +58,7 @@ public:
   static SeedType generateUniqueSeed();
 
   // Basic uniform sampling [0, 1)
-  double uniform() const;
+  virtual double uniform() const;
   double uniform(double min, double max) const;
 
   // Integer uniform sampling [min, max]

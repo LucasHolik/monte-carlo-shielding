@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cmath>
 #include <stdexcept>
+#include <string>
 
 // Static constants
 const Vector3D Vector3D::ZERO(0.0, 0.0, 0.0);
@@ -176,6 +177,22 @@ bool Vector3D::isZero(double tolerance) const
 bool Vector3D::isUnit(double tolerance) const
 {
   return std::abs(magnitude() - 1.0) < tolerance;
+}
+
+bool Vector3D::isFinite() const
+{
+  return std::isfinite(this->x_) && std::isfinite(this->y_) &&
+         std::isfinite(this->z_);
+}
+
+// Get vector as string
+std::string Vector3D::toString() const
+{
+  std::string vectorString{"(" + std::to_string(this->x_) + ", " +
+                           std::to_string(this->y_) + ", " +
+                           std::to_string(this->z_) + ")"};
+
+  return vectorString;
 }
 
 // Non-member operators

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <optional>
+#include <string>
 #include <tuple>
 
 /**
@@ -70,12 +71,16 @@ public:
   // Utility methods
   bool isZero(double tolerance = 1e-10) const;
   bool isUnit(double tolerance = 1e-10) const;
+  bool isFinite() const;
 
   // Static utility vectors
   static const Vector3D ZERO;
   static const Vector3D UNIT_X;
   static const Vector3D UNIT_Y;
   static const Vector3D UNIT_Z;
+
+  // Get vector as a string
+  std::string toString() const;
 };
 
 // Non-member operators

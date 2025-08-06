@@ -52,7 +52,7 @@ ext_modules = [
         "mcshield",  # Module name that will be importable in Python
         [
             # C++ source files - start with a simple hello world
-            "cpp/src/hello.cpp",  # We'll create this next
+             "cpp/tests/test_python_binding.cpp",
         ],
         include_dirs=[
             # Include directories

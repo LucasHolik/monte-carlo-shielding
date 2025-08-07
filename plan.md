@@ -153,7 +153,7 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 
 ### **Friday - Day 5: Basic Particle Transport**
 
-- [ ] Implement core particle transport loop:
+- [x] Implement core particle transport loop:
 
   ```cpp
   void Transport::trackParticle(Particle& particle) {
@@ -166,11 +166,11 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
   }
   ```
 
-- [ ] Add distance-to-interaction sampling
-- [ ] Create particle tracking through geometry
-- [ ] Implement boundary crossing and material changes
-- [ ] Test particle movement and geometry navigation
-- [ ] Add basic particle history logging
+- [x] Add distance-to-interaction sampling
+- [x] Create particle tracking through geometry
+- [x] Implement boundary crossing and material changes
+- [x] Test particle movement and geometry navigation
+- [x] Add basic particle history logging
 - **Success Metric**: Particles can move through materials, hit boundaries, and be tracked
 
 ---
@@ -179,22 +179,22 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 
 ### **Monday - Day 8: Photon Physics Foundation**
 
-- [ ] Research photon interaction cross-sections from NIST data
-- [ ] Implement photoelectric absorption:
+- [x] Research photon interaction cross-sections from NIST data
+- [x] Implement photoelectric absorption:
 
   ```cpp
   bool performPhotoelectricAbsorption(Particle& photon, const Material& mat);
   ```
 
-- [ ] Add Compton scattering physics (Klein-Nishina formula):
+- [x] Add Compton scattering physics (Klein-Nishina formula):
 
   ```cpp
   void performComptonScattering(Particle& photon, const Material& mat);
   ```
 
-- [ ] Create cross-section calculation functions
-- [ ] Test individual interaction physics against known values
-- [ ] Add energy and angle sampling for scattered photons
+- [x] Create cross-section calculation functions
+- [x] Test individual interaction physics against known values
+- [x] Add energy and angle sampling for scattered photons
 - **Success Metric**: Individual photon interactions working with correct physics
 
 ### **Tuesday - Day 9: Complete Photon Physics**

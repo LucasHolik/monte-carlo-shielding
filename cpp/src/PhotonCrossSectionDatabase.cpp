@@ -132,13 +132,9 @@ double ScofieldPhotoelectricData::getPhotoelectricCrossSection(int Z, double ene
   // Get binding energies
   const auto& binding = BINDING_ENERGIES[index];
   
-  // Check if below K-edge
-  if(energy_keV < binding.K_edge) {
-    return 0.0;
-  }
-  
   // Scofield photoelectric cross-section calculation
   // Based on relativistic Hartree-Slater calculations
+  // Sum contributions from all accessible shells
   
   double cross_section = 0.0;
   
@@ -171,24 +167,20 @@ double ScofieldPhotoelectricData::calculateKShellCrossSection(int Z, double ener
   if(energy_keV < edge_keV) return 0.0;
   
   // Scofield K-shell photoelectric cross-section
-  // Fit to Scofield's relativistic Hartree-Slater calculations
+  // Based on relativistic Hartree-Slater calculations
   
   double eta = energy_keV / edge_keV;  // Reduced energy
-  double beta = std::sqrt(1.0 - 1.0 / (eta * eta + 1.0)); // Relativistic parameter
   
-  // K-shell cross-section coefficients (fitted to Scofield data)
-  double alpha = Z / 137.036; // Fine structure parameter
-  double sigma_K = 8.0 * M_PI * std::pow(Constants::CLASSICAL_ELECTRON_RADIUS_CM * 1e13, 2) * 
-                   std::pow(alpha, 4) * std::pow(eta, -3.5);
+  // K-shell cross-section using simplified Scofield approximation
+  // σ_K ≈ 32π/3 * r_e² * α⁴ * (Z/η)^4 * η^(-0.5)
+  double alpha = Constants::FINE_STRUCTURE_CONSTANT;
+  double r_e_squared = Constants::CLASSICAL_ELECTRON_RADIUS_CM * Constants::CLASSICAL_ELECTRON_RADIUS_CM;
   
-  // Relativistic corrections
-  double f1 = 1.0 - 8.0 * alpha * alpha / (3.0 * M_PI);
-  double f2 = 1.0 + 2.0 * alpha * alpha * (1.0 - beta * beta);
+  // Simplified Scofield formula (approximate)
+  double sigma_K = (32.0 * M_PI / 3.0) * r_e_squared * std::pow(alpha * Z, 4) * std::pow(eta, -3.5);
   
-  sigma_K *= f1 * f2;
-  
-  // Convert to barns (cross-section already in correct units)
-  return sigma_K * 1e24; // Convert from cm² to barns
+  // Convert from cm² to barns
+  return sigma_K * 1e24;
 }
 
 double ScofieldPhotoelectricData::calculateLShellCrossSection(int Z, double energy_keV, double edge_keV, int subshell)
@@ -197,18 +189,19 @@ double ScofieldPhotoelectricData::calculateLShellCrossSection(int Z, double ener
   
   // L-shell photoelectric cross-section
   double eta = energy_keV / edge_keV;
-  double alpha = Z / 137.036;
+  double alpha = Constants::FINE_STRUCTURE_CONSTANT;
+  double r_e_squared = Constants::CLASSICAL_ELECTRON_RADIUS_CM * Constants::CLASSICAL_ELECTRON_RADIUS_CM;
   
-  // L-shell has different angular momentum quantum numbers
-  double j_factor = 1.0;
+  // L-shell has different angular momentum quantum numbers and occupancy
+  double occupancy_factor = 1.0;
   switch(subshell) {
-    case 1: j_factor = 0.5; break;  // L1 (j = 1/2)
-    case 2: j_factor = 0.5; break;  // L2 (j = 1/2)  
-    case 3: j_factor = 1.5; break;  // L3 (j = 3/2)
+    case 1: occupancy_factor = 2.0; break;  // L1: 2 electrons
+    case 2: occupancy_factor = 2.0; break;  // L2: 2 electrons  
+    case 3: occupancy_factor = 4.0; break;  // L3: 4 electrons
   }
   
-  double sigma_L = 2.0 * M_PI * std::pow(Constants::CLASSICAL_ELECTRON_RADIUS_CM * 1e13, 2) *
-                   std::pow(alpha, 4) * std::pow(eta, -3.5) * j_factor;
+  // L-shell cross-section (approximately 1/4 of K-shell per electron)
+  double sigma_L = (8.0 * M_PI / 3.0) * r_e_squared * std::pow(alpha * Z, 4) * std::pow(eta, -3.5) * occupancy_factor;
   
   return sigma_L * 1e24; // Convert to barns
 }
@@ -219,10 +212,12 @@ double ScofieldPhotoelectricData::calculateMShellCrossSection(int Z, double ener
   
   // M-shell photoelectric cross-section (simplified)
   double eta = energy_keV / edge_keV;
-  double alpha = Z / 137.036;
+  double alpha = Constants::FINE_STRUCTURE_CONSTANT;
+  double r_e_squared = Constants::CLASSICAL_ELECTRON_RADIUS_CM * Constants::CLASSICAL_ELECTRON_RADIUS_CM;
   
-  double sigma_M = 0.5 * M_PI * std::pow(Constants::CLASSICAL_ELECTRON_RADIUS_CM * 1e13, 2) *
-                   std::pow(alpha, 4) * std::pow(eta, -3.5);
+  // M-shell typically has ~18 electrons for heavy elements, approximate cross-section
+  double occupancy_factor = 18.0;
+  double sigma_M = (2.0 * M_PI / 3.0) * r_e_squared * std::pow(alpha * Z, 4) * std::pow(eta, -3.5) * occupancy_factor;
   
   return sigma_M * 1e24; // Convert to barns
 }

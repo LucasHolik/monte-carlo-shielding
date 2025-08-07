@@ -199,18 +199,18 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 
 ### **Tuesday - Day 9: Complete Photon Physics**
 
-- [ ] Add pair production for high-energy photons (>1.022 MeV)
-- [ ] Implement Rayleigh (coherent) scattering
-- [ ] Create total cross-section calculations:
+- [x] Add pair production for high-energy photons (>1.022 MeV)
+- [x] Implement Rayleigh (coherent) scattering
+- [x] Create total cross-section calculations:
 
   ```cpp
   double getTotalCrossSection(double energy, const Material& mat);
   InteractionType sampleInteractionType(double energy, const Material& mat);
   ```
 
-- [ ] Add interaction type sampling based on relative probabilities
-- [ ] Test complete photon physics package
-- [ ] Validate against published cross-section data
+- [x] Add interaction type sampling based on relative probabilities
+- [x] Test complete photon physics package
+- [x] Validate against published cross-section data
 - **Success Metric**: Complete, validated photon interaction physics
 
 ### **Wednesday - Day 10: Energy-Dependent Cross-Sections**

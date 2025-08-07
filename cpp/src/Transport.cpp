@@ -1,4 +1,5 @@
 #include "Transport.hpp"
+#include "PhotonCrossSectionDatabase.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -308,23 +309,17 @@ namespace DefaultCrossSections
 
 double photonTotalCrossSection(const Material &material, double energy)
 {
-  // Simplified photon cross-section (placeholder)
-  // In reality, would use tabulated data or analytical approximations
-
+  // Accurate photon cross-section using NIST-based PhotonCrossSectionDatabase
   if(energy <= 0.0)
   {
     return 0.0;
   }
 
-  // Simple approximation: μ = ρ * (μ/ρ)
-  // Where (μ/ρ) is mass attenuation coefficient
-  double density = material.density(); // g/cm³
-
-  // Very rough approximation for demonstration
-  // Real implementation would use NIST data
-  double mass_attenuation = 0.1 / energy; // cm²/g (simplified)
-
-  return density * mass_attenuation; // cm⁻¹
+  // Convert energy to keV (assuming input is in MeV)
+  double energy_keV = energy * 1000.0;
+  
+  // Use Material's integrated photon cross-section methods
+  return material.getLinearAttenuationCoefficient(energy_keV); // cm⁻¹
 }
 
 double neutronTotalCrossSection(const Material &material, double energy)

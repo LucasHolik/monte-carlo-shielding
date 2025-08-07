@@ -13,7 +13,7 @@ public:
     void runAllTests()
     {
         std::cout << "Running Cross-Section Database Validation Tests...\n";
-        std::cout << std::fixed << std::setprecision(6);
+        std::cout << std::scientific << std::setprecision(6);
         
         testPhotoelectricAccuracy();
         testCoherentScattering();

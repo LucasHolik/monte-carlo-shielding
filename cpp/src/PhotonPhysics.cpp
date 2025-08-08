@@ -4,6 +4,10 @@
 #include <cmath>
 #include <stdexcept>
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 PhotonPhysics::PhotonPhysics(MonteCarloSampling &sampling) : sampling_(sampling) {}
 
 PhotonInteractionResult PhotonPhysics::performInteraction(const Particle &photon,

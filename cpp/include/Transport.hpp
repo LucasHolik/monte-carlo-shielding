@@ -5,8 +5,11 @@
 #include "MonteCarloSampling.hpp"
 #include "Particle.hpp"
 #include "Vector3D.hpp"
+#include "PhotonPhysics.hpp"
+#include "SimulationResults.hpp"
 
 #include <functional>
+#include <memory>
 #include <optional>
 #include <string>
 #include <vector>
@@ -45,10 +48,15 @@ class Transport
 private:
   const Geometry &geometry_;
   MonteCarloSampling &sampling_;
+  std::unique_ptr<PhotonPhysics> photon_physics_;
   CrossSectionFunction cross_section_function_;
   double maximum_step_size_;
   bool enable_boundary_crossing_;
   bool enable_interaction_sampling_;
+  
+  // Statistics and results tracking
+  std::shared_ptr<SimulationResults> results_;
+  bool collect_detailed_results_ = false;
 
 public:
   // Constructor
@@ -68,6 +76,17 @@ public:
   {
     enable_interaction_sampling_ = enable;
   }
+  
+  // Results and statistics configuration
+  void setSimulationResults(std::shared_ptr<SimulationResults> results) {
+    results_ = results;
+  }
+  void enableDetailedResultsCollection(bool enable) {
+    collect_detailed_results_ = enable;
+  }
+  std::shared_ptr<SimulationResults> getSimulationResults() const {
+    return results_;
+  }
 
   // Main transport methods
   void trackParticle(Particle &particle);
@@ -79,7 +98,8 @@ public:
   void moveParticle(Particle &particle, double distance);
   bool hitBoundary(const Particle &particle, double proposed_distance);
   void handleBoundary(Particle &particle);
-  void performInteraction(Particle &particle, const Material &material);
+  PhotonInteractionResult performInteraction(Particle &particle, const Material &material);
+  void handleSecondaryParticles(const std::vector<Particle>& secondaries);
 
   // Advanced transport features
   std::vector<TransportStep> getParticleTrack(Particle particle,
@@ -104,6 +124,15 @@ private:
   void validateParticleState(const Particle &particle) const;
   void handleGeometryTransition(Particle &particle,
                                 const GeometryIntersection &intersection);
+  
+  // Results recording helpers
+  void recordInteraction(const Particle& particle, const Material& material,
+                        const PhotonInteractionResult& result);
+  void recordEnergyDeposition(const Material& material, double energy_deposited,
+                            PhotonInteractionType interaction_type);
+  InteractionRecord createInteractionRecord(const Particle& particle, 
+                                          const Material& material,
+                                          const PhotonInteractionResult& result) const;
 };
 
 // Default cross-section functions for common particle types

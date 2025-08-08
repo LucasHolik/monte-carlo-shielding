@@ -93,4 +93,7 @@ private:
   double calculateChiSquarePValue(double chi_square,
                                   size_t degrees_of_freedom) const;
   double calculateKSCriticalValue(size_t n, double alpha = 0.05) const;
+  
+  // Lazy directory creation with error handling
+  void ensureOutputDirectory() const;
 };

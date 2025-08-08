@@ -13,8 +13,7 @@ namespace fs = std::filesystem;
 SamplingDebugger::SamplingDebugger(const std::string &output_directory)
     : output_directory_(output_directory)
 {
-  // Create output directory if it doesn't exist
-  fs::create_directories(output_directory_);
+  // Directory creation moved to ensureOutputDirectory() for lazy initialization
 }
 
 void SamplingDebugger::recordSample(const std::string &distribution_name,
@@ -218,6 +217,7 @@ void SamplingDebugger::exportHistogramToCSV(
   if(histogram.empty())
     return;
 
+  ensureOutputDirectory();
   fs::path filepath = fs::path(output_directory_) / filename;
   std::ofstream file(filepath);
 
@@ -253,6 +253,7 @@ void SamplingDebugger::exportSamplesToFile(const std::string &distribution_name,
   if(it == samples_.end())
     return;
 
+  ensureOutputDirectory();
   fs::path filepath = fs::path(output_directory_) / filename;
   std::ofstream file(filepath);
 
@@ -321,6 +322,7 @@ void SamplingDebugger::generateReport(
   }
 
   // Save report
+  ensureOutputDirectory();
   fs::path filepath =
       fs::path(output_directory_) / (distribution_name + "_report.txt");
   std::ofstream file(filepath);
@@ -381,4 +383,22 @@ double SamplingDebugger::calculateKSCriticalValue(size_t n, double alpha) const
     return 1.63 / std::sqrt(static_cast<double>(n));
   }
   return 1.36 / std::sqrt(static_cast<double>(n)); // Default to 0.05
+}
+
+void SamplingDebugger::ensureOutputDirectory() const
+{
+  try
+  {
+    // Check if directory already exists to avoid unnecessary filesystem calls
+    if(!fs::exists(output_directory_))
+    {
+      fs::create_directories(output_directory_);
+    }
+  }
+  catch(const std::filesystem::filesystem_error &e)
+  {
+    // Log error but continue execution - files will fail gracefully
+    std::cerr << "Warning: Could not create output directory '" << output_directory_
+              << "': " << e.what() << std::endl;
+  }
 }

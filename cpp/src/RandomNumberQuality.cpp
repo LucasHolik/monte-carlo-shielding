@@ -49,7 +49,7 @@ double incompleteGamma(double a, double x)
 
 RandomNumberQuality::RandomNumberQuality(RandomNumberGenerator &rng,
                                          bool verbose)
-    : rng_(rng), verbose_(verbose)
+    : rng_(rng), verbose_(false)  // Always silent in production
 {}
 
 // ============================================================================
@@ -103,11 +103,7 @@ TestResult RandomNumberQuality::chiSquareTest(std::size_t n_samples,
                                               std::size_t n_bins,
                                               double confidence_level)
 {
-  if(verbose_)
-  {
-    std::cout << "Running chi-square test with " << n_samples << " samples and "
-              << n_bins << " bins...\n";
-  }
+  // Running chi-square test silently
 
   // Generate uniform samples
   std::vector<double> samples;
@@ -153,12 +149,7 @@ TestResult RandomNumberQuality::chiSquareTest(std::size_t n_samples,
   result.details["degrees_of_freedom"] = static_cast<double>(df);
   result.details["expected_frequency"] = expected;
 
-  if(verbose_)
-  {
-    std::cout << "Chi-square statistic: " << chi_square
-              << ", Critical value: " << critical_value
-              << ", P-value: " << p_value << std::endl;
-  }
+  // Test completed silently
 
   return result;
 }
@@ -166,11 +157,7 @@ TestResult RandomNumberQuality::chiSquareTest(std::size_t n_samples,
 TestResult RandomNumberQuality::kolmogorovSmirnovTest(std::size_t n_samples,
                                                       double confidence_level)
 {
-  if(verbose_)
-  {
-    std::cout << "Running Kolmogorov-Smirnov test with " << n_samples
-              << " samples...\n";
-  }
+  // Running KS test silently
 
   // Generate and sort samples
   std::vector<double> samples;
@@ -201,12 +188,7 @@ TestResult RandomNumberQuality::kolmogorovSmirnovTest(std::size_t n_samples,
   result.details["critical_value"] = critical_value;
   result.details["sample_size"] = static_cast<double>(n_samples);
 
-  if(verbose_)
-  {
-    std::cout << "KS statistic: " << ks_statistic
-              << ", Critical value: " << critical_value
-              << ", P-value: " << p_value << std::endl;
-  }
+  // KS test completed silently
 
   return result;
 }

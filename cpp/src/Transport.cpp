@@ -3,13 +3,17 @@
 
 #include <algorithm>
 #include <cmath>
+#include <iostream>
 #include <limits>
 #include <sstream>
 #include <stdexcept>
 
 Transport::Transport(const Geometry &geometry, MonteCarloSampling &sampling)
-    : geometry_(geometry), sampling_(sampling), maximum_step_size_(1e30),
-      enable_boundary_crossing_(true), enable_interaction_sampling_(true)
+    : geometry_(geometry), sampling_(sampling), 
+      photon_physics_(std::make_unique<PhotonPhysics>(sampling)),  // Enable photon physics
+      maximum_step_size_(1e30),
+      enable_boundary_crossing_(true), enable_interaction_sampling_(true),
+      results_(nullptr), collect_detailed_results_(false)
 {
   // Set default cross-section function for photons
   cross_section_function_ = DefaultCrossSections::photonTotalCrossSection;
@@ -17,8 +21,18 @@ Transport::Transport(const Geometry &geometry, MonteCarloSampling &sampling)
 
 void Transport::trackParticle(Particle &particle)
 {
+  int iteration_count = 0;
+  const int MAX_ITERATIONS = 1000; // Safety limit
+  
   while(particle.isAlive())
   {
+    iteration_count++;
+    
+    if (iteration_count > MAX_ITERATIONS) {
+      particle.kill();
+      break;
+    }
+    
     // Sample distance to next interaction
     auto current_material = getCurrentMaterial(particle);
     double distance = sampleDistanceToInteraction(particle, current_material);
@@ -32,7 +46,12 @@ void Transport::trackParticle(Particle &particle)
     {
       // Move particle and perform interaction
       moveParticle(particle, distance);
-      performInteraction(particle, current_material);
+      auto interaction_result = performInteraction(particle, current_material);
+      
+      // Handle any secondary particles created from the interaction
+      if (!interaction_result.secondary_particles.empty()) {
+        handleSecondaryParticles(interaction_result.secondary_particles);
+      }
     }
 
     // Safety check to prevent infinite loops
@@ -66,7 +85,12 @@ TransportStep Transport::transportParticleStep(Particle &particle)
   {
     moveParticle(particle, distance);
     step.interaction_occurred = true;
-    performInteraction(particle, current_material);
+    auto interaction_result = performInteraction(particle, current_material);
+    
+    // Handle any secondary particles created from the interaction
+    if (!interaction_result.secondary_particles.empty()) {
+      handleSecondaryParticles(interaction_result.secondary_particles);
+    }
   }
 
   step.final_position = particle.position();
@@ -94,7 +118,8 @@ double Transport::sampleDistanceToInteraction(const Particle &particle,
   double distance = sampling_.sampleInteractionDistance(mu);
 
   // Apply maximum step size limit
-  return std::min(distance, maximum_step_size_);
+  double final_distance = std::min(distance, maximum_step_size_);
+  return final_distance;
 }
 
 void Transport::moveParticle(Particle &particle, double distance)
@@ -148,15 +173,49 @@ void Transport::handleBoundary(Particle &particle)
   }
 }
 
-void Transport::performInteraction(Particle &particle, const Material &material)
+PhotonInteractionResult Transport::performInteraction(Particle &particle, const Material &material)
 {
   // Record interaction point
   particle.recordInteraction(particle.position());
-
-  // For now, implement simple absorption
-  // In a full implementation, this would sample interaction type
-  // and handle scattering, secondary particle production, etc.
-  particle.absorb();
+  
+  // Initialize default result
+  PhotonInteractionResult result;
+  result.particle_absorbed = false;
+  result.particle_scattered = false;
+  
+  // Handle physics-specific interactions based on particle type
+  if (particle.type() == ParticleType::Photon && photon_physics_) {
+    // Use realistic photon physics
+    result = photon_physics_->performInteraction(particle, material);
+    
+    // Update particle state based on interaction result
+    if (result.particle_absorbed) {
+      particle.absorb();
+    } else if (result.particle_scattered) {
+      // Update particle direction and energy
+      particle.setDirection(result.new_direction);
+      particle.setEnergy(result.new_energy);
+    }
+    
+    // Record interaction for statistics if results collection is enabled
+    if (results_) {
+      recordInteraction(particle, material, result);
+    }
+    
+  } else {
+    // Fallback for other particle types or when photon physics is not available
+    // Simple absorption for now
+    particle.absorb();
+    result.particle_absorbed = true;
+    result.interaction_type = PhotonInteractionType::PHOTOELECTRIC_ABSORPTION;
+    
+    // Record energy deposition
+    if (results_) {
+      recordEnergyDeposition(material, particle.energy(), PhotonInteractionType::PHOTOELECTRIC_ABSORPTION);
+    }
+  }
+  
+  return result;
 }
 
 std::vector<TransportStep> Transport::getParticleTrack(Particle particle,
@@ -301,6 +360,86 @@ void Transport::handleGeometryTransition(
   // - Energy threshold checks
   // - Material property changes
   // For now, particle continues in same direction
+}
+
+// =============================================================================
+// New helper method implementations for Day 11 integration
+// =============================================================================
+
+void Transport::handleSecondaryParticles(const std::vector<Particle>& secondaries)
+{
+  // For now, we'll just track secondary particles in the results
+  // In a full implementation, you might want to queue them for transport
+  // or handle them recursively based on their importance
+  
+  if (results_) {
+    for (const auto& secondary : secondaries) {
+      // Record secondary particle creation
+      // This would typically involve adding them to a particle queue
+      // For statistical purposes, we can record their energy contributions
+      
+      if (collect_detailed_results_) {
+        // Log secondary particle creation
+        // In practice, you might transport these particles as well
+        // depending on their type and energy threshold
+      }
+    }
+  }
+}
+
+void Transport::recordInteraction(const Particle& particle, const Material& material,
+                                const PhotonInteractionResult& result)
+{
+  if (!results_) return;
+  
+  // Calculate energy deposited in this interaction
+  double energy_deposited = 0.0;
+  
+  if (result.particle_absorbed) {
+    // All particle energy is deposited
+    energy_deposited = particle.energy();
+  } else if (result.particle_scattered) {
+    // Energy difference is deposited (recoil electron energy, etc.)
+    energy_deposited = particle.energy() - result.new_energy;
+  }
+  
+  // Record energy deposition
+  recordEnergyDeposition(material, energy_deposited, result.interaction_type);
+  
+  // Create detailed interaction record if requested
+  if (collect_detailed_results_) {
+    InteractionRecord record = createInteractionRecord(particle, material, result);
+    results_->recordInteraction(record);
+  }
+}
+
+void Transport::recordEnergyDeposition(const Material& material, double energy_deposited,
+                                     PhotonInteractionType interaction_type)
+{
+  if (!results_ || energy_deposited <= 0.0) return;
+  
+  // Record in simulation results
+  results_->recordEnergyDeposition(std::string(material.name()), energy_deposited, interaction_type);
+}
+
+InteractionRecord Transport::createInteractionRecord(const Particle& particle, 
+                                                   const Material& material,
+                                                   const PhotonInteractionResult& result) const
+{
+  InteractionRecord record;
+  record.position = particle.position();
+  record.energy_before = particle.energy();
+  record.energy_after = result.new_energy;
+  record.energy_deposited = particle.energy() - result.new_energy;
+  record.interaction_type = result.interaction_type;
+  record.material = material;
+  record.direction_before = particle.direction();
+  record.direction_after = result.new_direction;
+  record.generation = particle.generation();
+  record.particle_absorbed = result.particle_absorbed;
+  record.secondary_particles = result.secondary_particles;
+  
+  return record;
 }
 
 // Default cross-section implementations

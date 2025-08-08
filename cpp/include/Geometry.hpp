@@ -245,6 +245,11 @@ public:
                                          const Material &detector_material,
                                          const Material &surrounding_material);
 
+  static Geometry createShieldingExperiment(double shield_thickness_cm,
+                                           const Material &shield_material,
+                                           double experiment_length = 10.0,
+                                           double cross_section = 20.0);
+
   // Advanced features for future development
   void enableSpatialIndexing(bool enable = true); // Future optimisation
   void rebuildSpatialIndex() const;               // Future optimisation

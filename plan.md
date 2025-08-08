@@ -215,7 +215,7 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
 
 ### **Wednesday - Day 10: Energy-Dependent Cross-Sections**
 
-- [ ] Implement cross-section database structure:
+- [x] Implement cross-section database structure:
 
   ```cpp
   class CrossSectionDatabase {
@@ -224,25 +224,25 @@ Build a professional-grade Monte Carlo radiation transport simulator with C++ co
   };
   ```
 
-- [ ] Add energy interpolation (log-log interpolation)
-- [ ] Create material composition handling for mixtures
-- [ ] Load real nuclear data from NIST or ENDF sources
-- [ ] Test cross-section calculations vs. published data
-- [ ] Add density and temperature corrections
+- [x] Add energy interpolation (log-log interpolation)
+- [x] Create material composition handling for mixtures
+- [x] Load real nuclear data from NIST or ENDF sources
+- [x] Test cross-section calculations vs. published data
+- [x] Add density and temperature corrections
 - **Success Metric**: Realistic, energy-dependent physics matching published data
 
 ### **Thursday - Day 11: Integrated Photon Monte Carlo**
 
-- [ ] Integrate all physics with transport engine
-- [ ] Implement complete photon history tracking:
+- [x] Integrate all physics with transport engine
+- [x] Implement complete photon history tracking:
 
   ```cpp
   SimulationResults runPhotonSimulation(const Source& source, const Geometry& geom, int n_histories);
   ```
 
-- [ ] Add energy deposition tallies and flux calculations
-- [ ] Create particle termination handling (absorption, escape)
-- [ ] Test full photon transport simulation
+- [x] Add energy deposition tallies and flux calculations
+- [x] Create particle termination handling (absorption, escape)
+- [x] Test full photon transport simulation
 - [ ] Add statistical uncertainty calculations
 - **Success Metric**: Working end-to-end photon Monte Carlo simulator
 

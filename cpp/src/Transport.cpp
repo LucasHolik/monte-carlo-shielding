@@ -33,26 +33,8 @@ void Transport::trackParticle(Particle &particle)
       break;
     }
     
-    // Sample distance to next interaction
-    auto current_material = getCurrentMaterial(particle);
-    double distance = sampleDistanceToInteraction(particle, current_material);
-
-    // Check if particle hits boundary before interaction
-    if(hitBoundary(particle, distance))
-    {
-      handleBoundary(particle);
-    }
-    else
-    {
-      // Move particle and perform interaction
-      moveParticle(particle, distance);
-      auto interaction_result = performInteraction(particle, current_material);
-      
-      // Handle any secondary particles created from the interaction
-      if (!interaction_result.secondary_particles.empty()) {
-        handleSecondaryParticles(interaction_result.secondary_particles);
-      }
-    }
+    // Take one transport step using the same physics as transportParticleStep
+    transportParticleStep(particle);
 
     // Safety check to prevent infinite loops
     if(!isValidTransportState(particle))
@@ -70,19 +52,23 @@ TransportStep Transport::transportParticleStep(Particle &particle)
     return TransportStep(0.0, particle.position(), Material::createVacuum());
   }
 
+  // Get current material and sample interaction distance
   auto current_material = getCurrentMaterial(particle);
   double distance = sampleDistanceToInteraction(particle, current_material);
 
   TransportStep step(distance, particle.position(), current_material);
 
+  // Use ray-tracing boundary crossing logic (same as trackParticle)
   if(hitBoundary(particle, distance))
   {
+    // Boundary crossing: handle material transition with ray-tracing physics
     step.hit_boundary = true;
-    step.boundary_info = findNextBoundary(particle);
-    handleBoundary(particle);
+    step.boundary_info = findBoundaryAlongRay(particle.position(), particle.direction(), distance);
+    handleBoundaryCrossing(particle, distance, current_material);
   }
   else
   {
+    // Normal step: move and interact in same material
     moveParticle(particle, distance);
     step.interaction_occurred = true;
     auto interaction_result = performInteraction(particle, current_material);
@@ -144,8 +130,9 @@ bool Transport::hitBoundary(const Particle &particle, double proposed_distance)
     return false;
   }
 
-  double distance_to_boundary = getDistanceToBoundary(particle);
-  return distance_to_boundary < proposed_distance;
+  // Use ray-tracing to check if boundary would be crossed within proposed distance
+  auto boundary = findBoundaryAlongRay(particle.position(), particle.direction(), proposed_distance);
+  return boundary.has_value();
 }
 
 void Transport::handleBoundary(Particle &particle)
@@ -271,6 +258,23 @@ Transport::findNextBoundary(const Particle &particle) const
                                            particle.direction());
 }
 
+std::optional<GeometryIntersection>
+Transport::findBoundaryAlongRay(const Vector3D& start_pos, const Vector3D& direction, double max_distance) const
+{
+  auto intersection = geometry_.findClosestIntersection(start_pos, direction);
+  
+  if (!intersection) {
+    return std::nullopt; // No boundary found
+  }
+  
+  // Check if boundary is within the proposed step distance
+  if (intersection->distance > max_distance) {
+    return std::nullopt; // Boundary is beyond the intended step
+  }
+  
+  return intersection;
+}
+
 double Transport::getDistanceToBoundary(const Particle &particle) const
 {
   auto boundary = findNextBoundary(particle);
@@ -352,14 +356,83 @@ void Transport::validateParticleState(const Particle &particle) const
 void Transport::handleGeometryTransition(
     Particle &particle, const GeometryIntersection &intersection)
 {
-  // Set particle position exactly on boundary
+  // Set particle position exactly at boundary intersection point
   particle.setPosition(intersection.intersection_point);
 
+  // With ray-tracing boundary crossing, no epsilon stepping needed
+  // The new boundary crossing logic handles material transitions properly
+  
   // In a full implementation, this would handle:
-  // - Reflection/transmission at interfaces
+  // - Reflection/transmission at interfaces  
   // - Energy threshold checks
   // - Material property changes
   // For now, particle continues in same direction
+}
+
+void Transport::handleBoundaryCrossing(Particle &particle, double sampled_distance, const Material &current_material)
+{
+  // Ray-tracing approach: Don't move particle yet, calculate intended step first
+  Vector3D current_position = particle.position();
+  Vector3D direction = particle.direction();
+  
+  // Find if the intended step would cross a boundary
+  auto boundary_intersection = findBoundaryAlongRay(current_position, direction, sampled_distance);
+  
+  if(!boundary_intersection)
+  {
+    // No boundary crossed - this shouldn't happen if we're in handleBoundaryCrossing
+    // Fall back to normal step
+    moveParticle(particle, sampled_distance);
+    auto interaction_result = performInteraction(particle, current_material);
+    if (!interaction_result.secondary_particles.empty()) {
+      handleSecondaryParticles(interaction_result.secondary_particles);
+    }
+    return;
+  }
+  
+  double distance_to_boundary = boundary_intersection->distance;
+  double remaining_distance = sampled_distance - distance_to_boundary;
+  
+  // Get material B properties (peek slightly into new material for material query)
+  const double TINY_EPSILON = 1e-12;
+  Vector3D peek_position = boundary_intersection->intersection_point + direction * TINY_EPSILON;
+  
+  // Check if particle escapes geometry
+  if(!geometry_.isInsideAnyShape(peek_position))
+  {
+    // Particle escapes - move to boundary and mark as escaped
+    moveParticle(particle, distance_to_boundary);
+    particle.escape();
+    return;
+  }
+  
+  Material new_material = geometry_.getMaterialAtPoint(peek_position);
+  
+  // Calculate cross-sections for rescaling
+  double mu_current = calculateLinearAttenuationCoefficient(current_material, particle.energy());
+  double mu_new = calculateLinearAttenuationCoefficient(new_material, particle.energy());
+  
+  if(mu_new <= 0.0)
+  {
+    // No interactions possible in new material - particle continues through
+    moveParticle(particle, sampled_distance);
+    return;
+  }
+  
+  // Rescale remaining distance using material B cross-sections
+  double rescaled_distance_in_new_material = remaining_distance * (mu_current / mu_new);
+  
+  // Move particle directly to final position in single step
+  Vector3D final_position = boundary_intersection->intersection_point + direction * rescaled_distance_in_new_material;
+  particle.setPosition(final_position);
+  
+  // Perform interaction using NEW material cross-sections
+  auto interaction_result = performInteraction(particle, new_material);
+  
+  // Handle secondary particles
+  if (!interaction_result.secondary_particles.empty()) {
+    handleSecondaryParticles(interaction_result.secondary_particles);
+  }
 }
 
 // =============================================================================

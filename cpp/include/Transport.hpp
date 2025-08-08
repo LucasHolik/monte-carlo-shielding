@@ -111,6 +111,8 @@ public:
   Material getCurrentMaterial(const Particle &particle) const;
   std::optional<GeometryIntersection>
   findNextBoundary(const Particle &particle) const;
+  std::optional<GeometryIntersection>
+  findBoundaryAlongRay(const Vector3D& start_pos, const Vector3D& direction, double max_distance) const;
   double getDistanceToBoundary(const Particle &particle) const;
 
   // Validation and diagnostics
@@ -124,6 +126,8 @@ private:
   void validateParticleState(const Particle &particle) const;
   void handleGeometryTransition(Particle &particle,
                                 const GeometryIntersection &intersection);
+  void handleBoundaryCrossing(Particle &particle, double sampled_distance, 
+                             const Material &current_material);
   
   // Results recording helpers
   void recordInteraction(const Particle& particle, const Material& material,

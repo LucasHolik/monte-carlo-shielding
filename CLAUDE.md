@@ -118,6 +118,23 @@ The simulation engine is built in modern C++17 with these key components:
 - Statistical validation of Monte Carlo sampling
 - Physics validation against analytical solutions
 
+### Data Validation Guidelines
+
+**CRITICAL**: Never create placeholder/estimated data and test against it - this provides false validation with no real meaning. A "63% pass rate" against placeholder expectations is meaningless validation.
+
+**Requirements for Nuclear Industry Applications:**
+- All physics validation must use authoritative external data sources (NIST XCOM, ENDF, etc.)
+- Cross-section data must come from official nuclear data libraries, not approximations
+- Validation tests should compare against experimental benchmarks or established standards
+- Only genuine external data sources provide meaningful validation for safety-critical applications
+
+**Proper Validation Approach:**
+1. Obtain official NIST XCOM cross-section data for target elements
+2. Implement data parsing for the official format
+3. Validate interpolation against known tabulated values
+4. Compare simulation results against experimental measurements
+5. Achieve <1% accuracy for nuclear industry standards
+
 ## Important Implementation Notes
 
 - The project follows a 5-week development timeline (see plan.md for detailed schedule)
@@ -151,4 +168,8 @@ This is an active development project focused on demonstrating advanced computat
 
 ## Git Commit Guidelines
 
-When creating git commits, do not mention Claude or AI assistance in commit messages. Focus on the technical changes made.
+When creating git commits:
+- Do not mention Claude or AI assistance in commit messages
+- Do not mention updates to CLAUDE.md (it's not tracked in the repository)
+- Focus on the technical changes made to the actual codebase
+- Use semantic commit prefixes (feat:, fix:, refactor:, etc.)

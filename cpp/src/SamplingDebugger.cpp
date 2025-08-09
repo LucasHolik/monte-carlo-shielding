@@ -398,7 +398,7 @@ void SamplingDebugger::ensureOutputDirectory() const
   catch(const std::filesystem::filesystem_error &e)
   {
     // Log error but continue execution - files will fail gracefully
-    std::cerr << "Warning: Could not create output directory '" << output_directory_
-              << "': " << e.what() << std::endl;
+    std::cerr << "Warning: Could not create output directory '"
+              << output_directory_ << "': " << e.what() << std::endl;
   }
 }

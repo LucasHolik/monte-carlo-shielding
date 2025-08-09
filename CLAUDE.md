@@ -96,6 +96,7 @@ The simulation engine is built in modern C++17 with these key components:
 - Comprehensive test files in `cpp/tests/` following naming convention `test_*.cpp`
 - Use modern C++17 features: smart pointers, auto, range-based loops
 - Physics calculations follow established nuclear data libraries (NIST, ENDF)
+- **Include Path Convention**: Use simple header file names in #include statements (e.g., `#include "Material.hpp"` not `#include "../include/Material.hpp"` or `#include "cpp/include/Material.hpp"`)
 
 ### Python Integration
 

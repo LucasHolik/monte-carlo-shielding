@@ -2,12 +2,12 @@
 #include "PhotonCrossSectionDatabase.hpp"
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <iomanip>
 #include <numeric>
 #include <sstream>
 #include <stdexcept>
-#include <array>
 
 // Physical constants
 namespace PhysicalConstants
@@ -175,11 +175,15 @@ ElementComposition::ElementComposition(int z, double a, double fraction,
   }
 }
 
-// Material implementation  
-Material::Material() : name_("Unknown"), density_(0.0), reference_temperature_(293.15), thermal_expansion_coeff_(0.0) {}
+// Material implementation
+Material::Material()
+    : name_("Unknown"), density_(0.0), reference_temperature_(293.15),
+      thermal_expansion_coeff_(0.0)
+{}
 
 Material::Material(std::string_view name, double density)
-    : name_(name), density_(density), reference_temperature_(293.15), thermal_expansion_coeff_(0.0)
+    : name_(name), density_(density), reference_temperature_(293.15),
+      thermal_expansion_coeff_(0.0)
 {
   if(density < 0.0)
   {
@@ -837,13 +841,14 @@ double Material::getTotalPhotonCrossSection(double energy_keV) const
   }
 
   double weighted_cross_section = 0.0;
-  
+
   // Sum cross-sections weighted by atom fractions
-  for(const auto& element : composition_)
+  for(const auto &element : composition_)
   {
     double atom_fraction = getAtomFraction(element.atomic_number);
-    double element_xs = PhotonCrossSections::PhotonInteractionDatabase::getTotalCrossSection(
-        element.atomic_number, energy_keV);
+    double element_xs =
+        PhotonCrossSections::PhotonInteractionDatabase::getTotalCrossSection(
+            element.atomic_number, energy_keV);
     weighted_cross_section += atom_fraction * element_xs;
   }
 
@@ -860,10 +865,11 @@ double Material::getMassAttenuationCoefficient(double energy_keV) const
   double mass_attenuation = 0.0;
 
   // Sum mass attenuation coefficients weighted by mass fractions
-  for(const auto& element : composition_)
+  for(const auto &element : composition_)
   {
-    double mass_atten_element = PhotonCrossSections::PhotonInteractionDatabase::getMassAttenuationCoefficient(
-        element.atomic_number, element.atomic_mass, energy_keV);
+    double mass_atten_element = PhotonCrossSections::PhotonInteractionDatabase::
+        getMassAttenuationCoefficient(element.atomic_number,
+                                      element.atomic_mass, energy_keV);
     mass_attenuation += element.weight_fraction * mass_atten_element;
   }
 
@@ -876,22 +882,24 @@ double Material::getLinearAttenuationCoefficient(double energy_keV) const
   return mass_atten * density_; // μ = (μ/ρ) × ρ
 }
 
-std::array<double, 5> Material::getPhotonCrossSectionComponents(double energy_keV) const
+std::array<double, 5>
+Material::getPhotonCrossSectionComponents(double energy_keV) const
 {
   std::array<double, 5> total_components = {0.0, 0.0, 0.0, 0.0, 0.0};
-  
+
   if(isEmpty() || energy_keV <= 0.0)
   {
     return total_components;
   }
 
   // Sum components weighted by atom fractions
-  for(const auto& element : composition_)
+  for(const auto &element : composition_)
   {
     double atom_fraction = getAtomFraction(element.atomic_number);
-    auto element_components = PhotonCrossSections::PhotonInteractionDatabase::getAllCrossSections(
-        element.atomic_number, energy_keV);
-    
+    auto element_components =
+        PhotonCrossSections::PhotonInteractionDatabase::getAllCrossSections(
+            element.atomic_number, energy_keV);
+
     for(size_t i = 0; i < 5; ++i)
     {
       total_components[i] += atom_fraction * element_components[i];
@@ -905,10 +913,10 @@ std::array<double, 5> Material::getPhotonCrossSectionComponents(double energy_ke
 double Material::getAtomFraction(int atomic_number) const
 {
   auto element = std::find_if(composition_.begin(), composition_.end(),
-      [atomic_number](const ElementComposition& elem) {
-        return elem.atomic_number == atomic_number;
-      });
-  
+                              [atomic_number](const ElementComposition &elem) {
+                                return elem.atomic_number == atomic_number;
+                              });
+
   if(element == composition_.end())
   {
     return 0.0;
@@ -916,7 +924,7 @@ double Material::getAtomFraction(int atomic_number) const
 
   // Calculate total moles
   double total_moles = 0.0;
-  for(const auto& elem : composition_)
+  for(const auto &elem : composition_)
   {
     total_moles += elem.weight_fraction / elem.atomic_mass;
   }
@@ -946,7 +954,7 @@ double Material::getTemperatureCorrectedDensity(double temperature_K) const
   // where α is volumetric thermal expansion coefficient
   double temperature_diff = temperature_K - reference_temperature_;
   double volume_expansion = 1.0 + thermal_expansion_coeff_ * temperature_diff;
-  
+
   if(volume_expansion <= 0.0)
   {
     // Prevent negative/zero densities
@@ -956,10 +964,12 @@ double Material::getTemperatureCorrectedDensity(double temperature_K) const
   return density_ / volume_expansion;
 }
 
-double Material::getLinearAttenuationCoefficientAtTemperature(double energy_keV, double temperature_K) const
+double Material::getLinearAttenuationCoefficientAtTemperature(
+    double energy_keV, double temperature_K) const
 {
   double mass_atten = getMassAttenuationCoefficient(energy_keV);
-  double temperature_corrected_density = getTemperatureCorrectedDensity(temperature_K);
+  double temperature_corrected_density =
+      getTemperatureCorrectedDensity(temperature_K);
   return mass_atten * temperature_corrected_density;
 }
 

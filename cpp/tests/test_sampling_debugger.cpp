@@ -1,6 +1,9 @@
+#define _USE_MATH_DEFINES // M_PI is used
+
 #include "MonteCarloSampling.hpp"
 #include "RandomNumberGenerator.hpp"
 #include "SamplingDebugger.hpp"
+
 #include <cassert>
 #include <cmath>
 #include <iostream>

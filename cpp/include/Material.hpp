@@ -37,14 +37,15 @@ class Material
 {
 private:
   std::string name_;
-  double density_;                              // g/cm³ at reference temperature
+  double density_; // g/cm³ at reference temperature
   std::vector<ElementComposition> composition_; // Elements in material
   std::unordered_map<std::string, MaterialProperty>
       properties_;                            // Additional properties
   mutable std::optional<double> effective_z_; // Cached effective Z
   mutable std::optional<double> effective_a_; // Cached effective A
-  double reference_temperature_;              // K (temperature at which density was measured)
-  double thermal_expansion_coeff_;            // K⁻¹ (volumetric thermal expansion)
+  double
+      reference_temperature_; // K (temperature at which density was measured)
+  double thermal_expansion_coeff_; // K⁻¹ (volumetric thermal expansion)
 
 public:
   // Constructors
@@ -144,18 +145,21 @@ public:
   getMeanExcitationEnergy() const; // I-value for energy loss calculations
 
   // Photon interaction cross-sections (requires PhotonCrossSectionDatabase)
-  double getTotalPhotonCrossSection(double energy_keV) const; // per atom (barns)
-  double getMassAttenuationCoefficient(double energy_keV) const; // cm²/g
+  double
+  getTotalPhotonCrossSection(double energy_keV) const; // per atom (barns)
+  double getMassAttenuationCoefficient(double energy_keV) const;   // cm²/g
   double getLinearAttenuationCoefficient(double energy_keV) const; // cm⁻¹
-  std::array<double, 5> getPhotonCrossSectionComponents(double energy_keV) const; // [PE, Coh, Inc, Pair_n, Pair_e]
+  std::array<double, 5> getPhotonCrossSectionComponents(
+      double energy_keV) const; // [PE, Coh, Inc, Pair_n, Pair_e]
 
   // Temperature-dependent density corrections
   double getTemperatureCorrectedDensity(double temperature_K) const; // g/cm³
-  double getLinearAttenuationCoefficientAtTemperature(double energy_keV, double temperature_K) const; // cm⁻¹
+  double getLinearAttenuationCoefficientAtTemperature(
+      double energy_keV, double temperature_K) const;      // cm⁻¹
   void setThermalExpansionCoefficient(double alpha_per_K); // K⁻¹
-  double getThermalExpansionCoefficient() const; // K⁻¹
-  void setReferenceTemperature(double temperature_K); // K
-  double getReferenceTemperature() const; // K
+  double getThermalExpansionCoefficient() const;           // K⁻¹
+  void setReferenceTemperature(double temperature_K);      // K
+  double getReferenceTemperature() const;                  // K
 
   // Validation
   bool isValid() const;
@@ -211,7 +215,8 @@ private:
   double calculateEffectiveZ() const;
   double calculateEffectiveA() const;
   void validateAndThrow() const;
-  double getAtomFraction(int atomic_number) const; // Helper for photon cross-sections
+  double
+  getAtomFraction(int atomic_number) const; // Helper for photon cross-sections
 };
 
 // Utility functions for material calculations

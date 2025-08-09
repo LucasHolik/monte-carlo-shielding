@@ -663,9 +663,9 @@ Geometry Geometry::createDetectorGeometry(const Vector3D &detector_position,
 }
 
 Geometry Geometry::createShieldingExperiment(double shield_thickness_cm,
-                                            const Material &shield_material,
-                                            double experiment_length,
-                                            double cross_section)
+                                             const Material &shield_material,
+                                             double experiment_length,
+                                             double cross_section)
 {
   // Create air-shield-air configuration for transmission experiments
   Material air = Material::createAir();
@@ -676,21 +676,20 @@ Geometry Geometry::createShieldingExperiment(double shield_thickness_cm,
 
   // Region 1: Air before shield (z=-half_length to z=0)
   Box air_before(Vector3D(-half_cross, -half_cross, -half_length),
-                 Vector3D(half_cross, half_cross, 0.0),
-                 air, "Air_Before");
-  
-  // Region 2: Shield material (z=0 to z=shield_thickness_cm)  
+                 Vector3D(half_cross, half_cross, 0.0), air, "Air_Before");
+
+  // Region 2: Shield material (z=0 to z=shield_thickness_cm)
   Box shield(Vector3D(-half_cross, -half_cross, 0.0),
              Vector3D(half_cross, half_cross, shield_thickness_cm),
              shield_material, "Shield");
-             
+
   // Region 3: Air after shield (z=shield_thickness_cm to z=half_length)
   Box air_after(Vector3D(-half_cross, -half_cross, shield_thickness_cm),
-                Vector3D(half_cross, half_cross, half_length),
-                air, "Air_After");
+                Vector3D(half_cross, half_cross, half_length), air,
+                "Air_After");
 
   geometry.addBox(air_before, "Air_Before");
-  geometry.addBox(shield, "Shield");  
+  geometry.addBox(shield, "Shield");
   geometry.addBox(air_after, "Air_After");
 
   return geometry;

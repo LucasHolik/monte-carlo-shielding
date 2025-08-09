@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES // M_PI is used
+
 #include "MonteCarloSampling.hpp"
 
 #include <algorithm>

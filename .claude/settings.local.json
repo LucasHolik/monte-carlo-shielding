@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "Bash(git fetch:*)",
+      "Bash(git pull:*)",
+      "Bash(git stash push:*)",
+      "Bash(git stash:*)",
+      "Bash(g++:*)",
+      "Bash(./test_day11_simple)",
+      "Bash(timeout:*)",
+      "Bash(./test_day11_minimal)",
+      "Bash(./test_day11_final)",
+      "Bash(./test_shielding)",
+      "Bash(./test_quick_demo)",
+      "Bash(./test_day11_shielding_enhanced:*)",
+      "Bash(./test_day11_simple.exe)",
+      "Bash(./minimal_test)",
+      "Bash(./test_sampling_debugger_simple)",
+      "Bash(test_sampling_debugger_simple.exe)",
+      "Bash(.test_sampling_debugger_simple.exe)",
+      "Bash(rm:*)",
+      "Bash(./test_100_particles.exe)",
+      "Bash(./debug_boundary_crossing.exe)",
+      "Bash(git filter-branch:*)",
+      "Bash(FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch --index-filter 'git rm --cached --ignore-unmatch DAY_10_COMPLETION_REPORT.md' HEAD)",
+      "Bash(./test_diagnostic.exe)",
+      "Bash(./test_tiny.exe)",
+      "Bash(./test_minimal_debug.exe)",
+      "Bash(rg:*)",
+      "Bash(./test_new_boundary_updated)",
+      "Bash(git add:*)"
+    ],
+    "deny": []
+  }
+}

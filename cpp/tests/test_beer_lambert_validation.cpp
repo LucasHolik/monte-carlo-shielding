@@ -1,8 +1,8 @@
-#include "../include/PhotonSimulation.hpp"
-#include "../include/ParticleSource.hpp"
-#include "../include/Material.hpp"
-#include "../include/Box.hpp"
-#include "../include/SimulationResults.hpp"
+#include "PhotonSimulation.hpp"
+#include "ParticleSource.hpp"
+#include "Material.hpp"
+#include "Box.hpp"
+#include "SimulationResults.hpp"
 
 #include <iostream>
 #include <iomanip>

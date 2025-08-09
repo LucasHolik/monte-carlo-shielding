@@ -49,7 +49,7 @@ double incompleteGamma(double a, double x)
 
 RandomNumberQuality::RandomNumberQuality(RandomNumberGenerator &rng,
                                          bool verbose)
-    : rng_(rng), verbose_(false)  // Always silent in production
+    : rng_(rng), verbose_(false) // Always silent in production
 {}
 
 // ============================================================================

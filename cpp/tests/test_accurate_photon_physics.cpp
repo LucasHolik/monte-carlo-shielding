@@ -1,8 +1,8 @@
-#include "../include/PhotonPhysics.hpp"
-#include "../include/PhotonCrossSectionDatabase.hpp"
-#include "../include/Material.hpp"
-#include "../include/MonteCarloSampling.hpp"
-#include "../include/RandomNumberGenerator.hpp"
+#include "PhotonPhysics.hpp"
+#include "PhotonCrossSectionDatabase.hpp"
+#include "Material.hpp"
+#include "MonteCarloSampling.hpp"
+#include "RandomNumberGenerator.hpp"
 
 #include <cassert>
 #include <cmath>
